@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
 
+import 'package:pardna/utils/globals.dart' as globals;
+
 class Landing extends StatefulWidget {
   const Landing({Key? key}) : super(key: key);
 
@@ -32,11 +34,11 @@ class _LandingState extends State<Landing> {
                 Scaffold.of(context).openDrawer();
               },
             ),
-            const SizedBox(
+            SizedBox(
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: TextUtil(
-                  text: 'Hello, YuryB',
+                  text: 'Hello, ${globals.userInfo['name']}',
                   color: Colors.black,
                   size: 25,
                   weight: true,

@@ -7,10 +7,10 @@ import 'package:pardna/utils/text_utils.dart';
 
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
-import 'package:flutter/cupertino.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final int? pageIndex;
+  const HomePage({Key? key, this.pageIndex}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -25,6 +25,13 @@ class _HomePageState extends State<HomePage> {
     Icons.task,
     Icons.groups,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.pageIndex != null) _selectedIndex = widget.pageIndex!;
+    controller = PageController(initialPage: _selectedIndex);
+  }
 
   void _locateByFooter(int index) {
     if (index == 0) {

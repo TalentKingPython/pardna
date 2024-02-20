@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'dart:ui';
 
+import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/text_utils.dart';
+import 'package:pardna/screens/home.dart';
+import 'package:pardna/utils/text_utils.dart';
+import 'package:pardna/utils/network.dart';
+import 'package:pardna/utils/globals.dart' as globals;
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -12,6 +17,21 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmController = TextEditingController();
+
+  Future<Response> _registerWithEmail() async {
+    final response = await AuthService.registerWithEmail(
+      _nameController.text,
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,10 +101,11 @@ class _RegisterState extends State<Register> {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.green))),
                               child: TextFormField(
-                                style: const TextStyle(color: Colors.green),
+                                controller: _nameController,
+                                style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
                                   suffixIcon: Icon(
-                                    Icons.mail,
+                                    Icons.person,
                                     color: Colors.green,
                                   ),
                                   fillColor: Colors.green,
@@ -104,7 +125,8 @@ class _RegisterState extends State<Register> {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.green))),
                               child: TextFormField(
-                                style: const TextStyle(color: Colors.green),
+                                controller: _emailController,
+                                style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
                                   suffixIcon: Icon(
                                     Icons.mail,
@@ -127,7 +149,9 @@ class _RegisterState extends State<Register> {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.green))),
                               child: TextFormField(
-                                style: const TextStyle(color: Colors.green),
+                                controller: _passwordController,
+                                style: const TextStyle(color: Colors.black),
+                                obscureText: true,
                                 decoration: const InputDecoration(
                                   suffixIcon: Icon(
                                     Icons.lock,
@@ -150,7 +174,9 @@ class _RegisterState extends State<Register> {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.green))),
                               child: TextFormField(
-                                style: const TextStyle(color: Colors.green),
+                                controller: _confirmController,
+                                style: const TextStyle(color: Colors.black),
+                                obscureText: true,
                                 decoration: const InputDecoration(
                                   suffixIcon: Icon(
                                     Icons.lock,
@@ -162,17 +188,60 @@ class _RegisterState extends State<Register> {
                               ),
                             ),
                             const Spacer(),
-                            Container(
-                              height: 40,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  borderRadius: BorderRadius.circular(30)),
-                              alignment: Alignment.center,
-                              child: const TextUtil(
-                                text: "Register",
-                                color: Colors.white,
+                            TextButton(
+                              child: Container(
+                                height: 40,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(30)),
+                                alignment: Alignment.center,
+                                child: const TextUtil(
+                                  text: "Register",
+                                  color: Colors.white,
+                                ),
                               ),
+                              onPressed: () async {
+                                if (_passwordController.text !=
+                                    _confirmController.text) {
+                                  const snackBar = SnackBar(
+                                    content: Text(
+                                      'Passwords you entered should be sames.',
+                                    ),
+                                  );
+
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                } else {
+                                  final response = await _registerWithEmail();
+                                  print(response.statusCode);
+                                  if (!context.mounted) return;
+                                  if (response.statusCode == 200) {
+                                    setState(() {
+                                      globals.authToken = jsonDecode(
+                                          response.body)['authToken'];
+                                      globals.userInfo =
+                                          jsonDecode(response.body);
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const HomePage(),
+                                      ),
+                                    );
+                                  } else {
+                                    print(response.statusCode);
+                                    final snackBar = SnackBar(
+                                      content: Text(
+                                        jsonDecode(response.body)['message'],
+                                      ),
+                                    );
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  }
+                                }
+                              },
                             ),
                             const Spacer(),
                             Center(
