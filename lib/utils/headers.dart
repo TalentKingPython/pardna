@@ -18,7 +18,11 @@ class HomeHeader extends StatelessWidget {
             onPressed: onPressed,
           ),
           const TextUtil(
-              text: "PARDNA", weight: true, color: Colors.black, size: 25),
+            text: "PARDNA",
+            weight: true,
+            color: Colors.black,
+            size: 25,
+          ),
         ],
       ),
     );
@@ -37,20 +41,26 @@ class DetailHeader extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Colors.green,
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, weight: 700, size: 20),
-            onPressed: onPressed,
-          ),
-          TextUtil(
-              onPressed: onPressed,
+      child: TextButton(
+        onPressed: onPressed,
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.arrow_back,
+              weight: 700,
+              size: 20,
+              color: Colors.black,
+            ),
+            SizedBox(width: 5),
+            TextUtil(
               text: "Back",
               weight: true,
               color: Colors.black,
-              size: 15),
-        ],
+              size: 15,
+            ),
+          ],
+        ),
       ),
     );
   }

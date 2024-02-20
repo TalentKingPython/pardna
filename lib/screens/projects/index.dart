@@ -1,6 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:pardna/screens/projects/addproject.dart';
+import 'dart:convert';
 
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pardna/screens/projects/addproject.dart';
+import 'package:pardna/screens/projects/details.dart';
+import 'package:pardna/utils/network.dart';
+import 'package:pardna/utils/globals.dart' as globals;
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
 
@@ -13,8 +19,51 @@ class Project extends StatefulWidget {
 
 class _ProjectState extends State<Project> {
   final ExpansionTileController controller = ExpansionTileController();
-  final List<String> items =
-      List<String>.generate(20, (index) => 'Item $index');
+  List<dynamic> projects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getAllProjects();
+  }
+
+  void getAllProjects() {
+    ProjectService.getAllProjects().then((res) => setState(() {
+          projects = jsonDecode(res.body)['data'];
+        }));
+  }
+
+  String durationMode(String? duration) {
+    final Map<String, String> durationMap = {
+      'Daily': 'days',
+      'Weekly': 'weeks',
+      'Monthly': 'months',
+      'Yearly': 'years',
+    };
+
+    return durationMap[duration ?? ''] ?? '-';
+  }
+
+  DateTime getEndDate(DateTime start, String? duration, String numberOfMember) {
+    final number = int.parse(numberOfMember);
+    switch (duration) {
+      case 'Daily':
+        return start.add(Duration(days: number));
+      case 'Weekly':
+        return start.add(Duration(days: number * 7));
+      case 'Monthly':
+        return DateTime(start.year, start.month + number, start.day);
+      case 'Yearly':
+        return DateTime(start.year + number, start.month, start.day);
+      default:
+        return start;
+    }
+  }
+
+  String getTotal(String amount, String number) {
+    double total = double.parse(amount) * int.parse(number);
+    return total.toStringAsFixed(2);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +137,7 @@ class _ProjectState extends State<Project> {
               child: SingleChildScrollView(
                   child: Column(
                 children: [
-                  for (int i = 0; i < items.length; i++)
+                  for (int i = 0; i < projects.length; i++)
                     Column(
                       children: [
                         Card(
@@ -100,22 +149,23 @@ class _ProjectState extends State<Project> {
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                           ),
                           child: ExpansionTile(
-                            title: const Row(
+                            title: Row(
                               children: [
-                                Icon(Icons.person_outlined,
+                                const Icon(Icons.person_outlined,
                                     size: 22, color: Colors.green),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     TextUtil(
-                                      text: 'Fab2024',
+                                      text: projects[i]['name'],
                                       color: Colors.black,
                                       weight: true,
                                       size: 15,
                                     ),
                                     TextUtil(
-                                      text: '0 / 1 Weeks',
+                                      text:
+                                          '0 / ${projects[i]['number']} ${durationMode(projects[i]['duration'])}',
                                       color: Colors.green,
                                       size: 12,
                                     ),
@@ -124,120 +174,129 @@ class _ProjectState extends State<Project> {
                               ],
                             ),
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
                                 child: Column(
                                   children: [
-                                    Divider(height: 5),
-                                    SizedBox(height: 8),
+                                    const Divider(height: 5),
+                                    const SizedBox(height: 8),
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Icon(Icons.calendar_today_rounded,
+                                        const Icon(Icons.calendar_today_rounded,
                                             color: Colors.green, size: 15),
-                                        TextUtil(
+                                        const TextUtil(
                                           text: '  From ',
                                           size: 14,
                                           color: Colors.black,
                                         ),
                                         TextUtil(
-                                          text: '12.02.2024',
+                                          text: DateFormat('yyyy.MM.dd').format(
+                                              DateTime.parse(
+                                                  projects[i]['start'])),
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
                                         ),
-                                        TextUtil(
+                                        const TextUtil(
                                           text: ' to ',
                                           size: 14,
                                           color: Colors.black,
                                         ),
                                         TextUtil(
-                                          text: '12.02.2024',
+                                          text: DateFormat('yyyy.MM.dd').format(
+                                              getEndDate(
+                                                  DateTime.parse(
+                                                      projects[i]['start']),
+                                                  projects[i]['duration'],
+                                                  projects[i]['number'])),
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8),
+                                    const SizedBox(height: 8),
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Icon(Icons.groups,
+                                        const Icon(Icons.groups,
                                             color: Colors.green, size: 15),
-                                        TextUtil(
+                                        const TextUtil(
                                           text: '  Has ',
                                           size: 14,
                                           color: Colors.black,
                                         ),
                                         TextUtil(
-                                          text: '2',
+                                          text: projects[i]['number'],
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
                                         ),
-                                        TextUtil(
+                                        const TextUtil(
                                           text: ' members',
                                           size: 14,
                                           color: Colors.black,
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8),
+                                    const SizedBox(height: 8),
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           size: 15,
                                           Icons.task,
                                           color: Colors.green,
                                         ),
-                                        SizedBox(width: 5),
+                                        const SizedBox(width: 5),
                                         TextUtil(
-                                          text: '\$50',
+                                          text: '\$${projects[i]['amount']}',
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
                                         ),
-                                        TextUtil(
+                                        const TextUtil(
                                           text: ' per participant ',
                                           size: 14,
                                           color: Colors.black,
                                         ),
                                         TextUtil(
-                                          text: 'Weekly',
+                                          text: projects[i]['duration'],
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8),
+                                    const SizedBox(height: 8),
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Icon(Icons.web_stories_outlined,
+                                        const Icon(Icons.web_stories_outlined,
                                             color: Colors.green, size: 15),
-                                        TextUtil(
+                                        const TextUtil(
                                           text:
                                               '  Total from pardna per participant ',
                                           size: 14,
                                           color: Colors.black,
                                         ),
                                         TextUtil(
-                                          text: '100',
+                                          text:
+                                              '\$${getTotal(projects[i]['amount'], projects[i]['number'])}',
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8),
-                                    Divider(height: 5),
+                                    const SizedBox(height: 8),
+                                    const Divider(height: 5),
                                   ],
                                 ),
                               ),
@@ -249,7 +308,18 @@ class _ProjectState extends State<Project> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        setState(() {
+                                          globals.projectInfo = projects[i];
+                                        });
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ProjectDetail(),
+                                          ),
+                                        );
+                                      },
                                       child: Container(
                                         height: 40,
                                         width: 180,
@@ -268,7 +338,14 @@ class _ProjectState extends State<Project> {
                                     ),
                                     IconButton(
                                       color: Colors.red[700],
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        ProjectService.deleteProject(
+                                                projects[i]['_id'])
+                                            .then((res) => {
+                                                  if (res.statusCode == 200)
+                                                    getAllProjects()
+                                                });
+                                      },
                                       icon: const Icon(
                                           Icons.delete_forever_outlined),
                                     )

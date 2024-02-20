@@ -1,7 +1,14 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
+
+import 'package:pardna/screens/member/addcontacts.dart';
+import 'package:pardna/screens/member/addmember.dart';
+import 'package:pardna/utils/network.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
+import 'package:pardna/utils/globals.dart' as globals;
 
 class Member extends StatefulWidget {
   const Member({Key? key}) : super(key: key);
@@ -11,9 +18,17 @@ class Member extends StatefulWidget {
 }
 
 class _MemberState extends State<Member> {
-  final ExpansionTileController controller = ExpansionTileController();
-  final List<String> items =
-      List<String>.generate(20, (index) => 'Item $index');
+  List<dynamic> members = [];
+
+  @override
+  void initState() {
+    super.initState();
+    UserService.getAllTeamMembers(globals.userInfo['members'])
+        // .then((res) => print(jsonDecode(res.body)['data']));
+        .then((res) => setState(() {
+              members = jsonDecode(res.body)['data'];
+            }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,38 +85,47 @@ class _MemberState extends State<Member> {
               ),
               child: SizedBox(
                 height: 540,
+                width: 400,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      for (int index = 0; index < items.length; index++)
-                        const Column(
+                      for (int index = 0; index < members.length; index++)
+                        Column(
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(
-                                  radius: 25, // Image radius
-                                  backgroundImage: NetworkImage(
-                                      'https://app.idonethis.com/api/users/download-avatar/user/124382'),
+                                const AdvancedAvatar(
+                                  size: 50,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.green,
+                                  ),
+                                  child: Icon(
+                                    Icons.account_circle,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
                                 ),
-                                SizedBox(width: 15),
+                                const SizedBox(width: 15),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     TextUtil(
                                       height: 25,
-                                      text: 'YuryB',
+                                      text: members[index]['name'],
                                       size: 15,
                                       color: Colors.black,
                                     ),
                                     TextUtil(
                                       height: 20,
-                                      text: '+15705932206',
+                                      text: members[index]['email'],
                                       size: 13,
                                       color: Colors.grey,
                                     ),
                                     TextUtil(
                                       height: 20,
-                                      text: 'lucky.godness.tan@gmail.com',
+                                      text: members[index]['phone'] ??
+                                          'No phone number',
                                       size: 13,
                                       color: Colors.grey,
                                     ),
@@ -161,12 +185,20 @@ class _MemberState extends State<Member> {
                 ),
                 alignment: Alignment.center,
                 child: const TextUtil(
-                  text: "Input member details",
+                  text: "Add users as your members",
                   color: Colors.white,
                   weight: true,
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddMember(),
+                  ),
+                );
+              },
             ),
             TextButton(
               child: Container(
@@ -183,7 +215,15 @@ class _MemberState extends State<Member> {
                   weight: true,
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddContacts(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 15),
             TextButton(
