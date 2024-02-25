@@ -11,7 +11,7 @@ import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
 
 class Project extends StatefulWidget {
-  const Project({Key? key}) : super(key: key);
+  const Project({super.key});
 
   @override
   State<Project> createState() => _ProjectState();

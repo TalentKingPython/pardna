@@ -10,7 +10,7 @@ import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class HomePage extends StatefulWidget {
   final int? pageIndex;
-  const HomePage({Key? key, this.pageIndex}) : super(key: key);
+  const HomePage({super.key, this.pageIndex});
 
   @override
   State<HomePage> createState() => _HomePageState();

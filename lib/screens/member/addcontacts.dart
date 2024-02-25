@@ -10,7 +10,7 @@ import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
 class AddContacts extends StatefulWidget {
-  const AddContacts({Key? key}) : super(key: key);
+  const AddContacts({super.key});
 
   @override
   State<AddContacts> createState() => _AddContactsState();

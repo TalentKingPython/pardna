@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pardna/screens/home.dart';
-import 'package:pardna/screens/member/addcontacts.dart';
-import 'package:pardna/screens/member/addmember.dart';
+import 'package:pardna/screens/projects/addmember.dart';
+import 'package:pardna/utils/network.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
 import 'package:pardna/utils/globals.dart' as globals;
@@ -12,7 +14,7 @@ import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class ProjectDetail extends StatefulWidget {
-  const ProjectDetail({Key? key}) : super(key: key);
+  const ProjectDetail({super.key});
 
   @override
   State<ProjectDetail> createState() => _ProjectDetailState();
@@ -53,6 +55,32 @@ class _ProjectDetailState extends State<ProjectDetail> {
     return total.toStringAsFixed(2);
   }
 
+  void addButtonPressed() {
+    if (globals.userInfo['_id'] == globals.projectInfo['creator']) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AddMember(),
+        ),
+      );
+    } else {
+      _joinDialogBuilder(context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProjectMembers();
+  }
+
+  void getProjectMembers() {
+    ProjectService.getAllProjectMembers(globals.projectInfo['_id'])
+        .then((res) => setState(() {
+              members = jsonDecode(res.body)['data'];
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,11 +107,21 @@ class _ProjectDetailState extends State<ProjectDetail> {
                     const SizedBox(height: 10),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: TextUtil(
-                        text: 'Pardna ${globals.projectInfo['name']}',
-                        size: 25,
-                        color: Colors.black,
-                        weight: true,
+                      child: Row(
+                        children: [
+                          const TextUtil(
+                            text: 'Pardna ',
+                            size: 25,
+                            color: Colors.black,
+                            weight: true,
+                          ),
+                          TextUtil(
+                            text: globals.projectInfo['name'],
+                            size: 25,
+                            color: Colors.green,
+                            weight: true,
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -288,14 +326,17 @@ class _ProjectDetailState extends State<ProjectDetail> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(20)),
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                             child: const Icon(
                               Icons.add,
                               color: Colors.black,
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            addButtonPressed();
+                          },
                         )
                       ],
                     ),
@@ -319,46 +360,136 @@ class _ProjectDetailState extends State<ProjectDetail> {
                                   children: [
                                     Row(
                                       children: [
+                                        const SizedBox(width: 10),
                                         const Icon(
                                           Icons.person,
-                                          color: Colors.white,
+                                          color: Colors.green,
                                           size: 30,
                                         ),
-                                        const SizedBox(width: 15),
+                                        const SizedBox(width: 10),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             TextUtil(
-                                              height: 25,
                                               text: members[index]['name'],
-                                              size: 15,
+                                              size: 13,
                                               color: Colors.black,
                                             ),
                                             TextUtil(
-                                              height: 20,
                                               text: members[index]['email'],
-                                              size: 13,
+                                              size: 12,
                                               color: Colors.grey,
                                             ),
                                             TextUtil(
-                                              height: 20,
                                               text: members[index]['phone'] ??
                                                   'No phone number',
-                                              size: 13,
+                                              size: 12,
                                               color: Colors.grey,
                                             ),
                                           ],
-                                        )
+                                        ),
+                                        const Spacer(),
+                                        if (members[index]['status'] ==
+                                            'joining')
+                                          Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  if (globals.userInfo['_id'] ==
+                                                      globals.projectInfo[
+                                                          'creator']) {
+                                                    ProjectService
+                                                            .updateProjectMember(
+                                                                globals.projectInfo[
+                                                                    '_id'],
+                                                                members[index]
+                                                                    ['_id'],
+                                                                'active')
+                                                        .then((res) => {
+                                                              if (res.statusCode ==
+                                                                  200)
+                                                                setState(() {
+                                                                  members[index]
+                                                                          [
+                                                                          'status'] =
+                                                                      'active';
+                                                                })
+                                                            });
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.check_circle,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  if (globals.userInfo['_id'] ==
+                                                      globals.projectInfo[
+                                                          'creator']) {
+                                                    ProjectService
+                                                            .updateProjectMember(
+                                                                globals.projectInfo[
+                                                                    '_id'],
+                                                                members[index]
+                                                                    ['_id'],
+                                                                'denied')
+                                                        .then((res) => {
+                                                              if (res.statusCode ==
+                                                                  200)
+                                                                setState(() {
+                                                                  members[index]
+                                                                          [
+                                                                          'status'] =
+                                                                      'denied';
+                                                                })
+                                                            });
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.highlight_off,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        if (members[index]['status'] ==
+                                            'inviting')
+                                          GestureDetector(
+                                            onTap: () {
+                                              if (members[index]['_id'] ==
+                                                  globals.userInfo['_id']) {
+                                                _acceptDialogBuilder(
+                                                    context, index);
+                                              }
+                                            },
+                                            child: const Icon(
+                                              Icons.pending,
+                                              color: Colors.orange,
+                                            ),
+                                          ),
+                                        if (members[index]['status'] ==
+                                            'active')
+                                          const Icon(
+                                            Icons.check_circle,
+                                            color: Colors.green,
+                                          ),
+                                        if (members[index]['status'] ==
+                                            'denied')
+                                          const Icon(
+                                            Icons.highlight_off,
+                                            color: Colors.red,
+                                          ),
                                       ],
                                     ),
-                                    const Divider(),
+                                    const Divider(height: 10),
                                   ],
                                 ),
                               TextButton(
                                 child: Container(
-                                  width: 45,
-                                  height: 45,
+                                  width: 40,
+                                  height: 40,
                                   decoration: BoxDecoration(
                                     color: Colors.green,
                                     borderRadius: BorderRadius.circular(25),
@@ -368,7 +499,9 @@ class _ProjectDetailState extends State<ProjectDetail> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                onPressed: () => _dialogBuilder(context),
+                                onPressed: () {
+                                  addButtonPressed();
+                                },
                               ),
                             ],
                           ),
@@ -426,7 +559,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const HomePage(pageIndex: 1),
+                  builder: (context) => const HomePage(pageIndex: 0),
                 ),
               );
               break;
@@ -434,7 +567,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const HomePage(pageIndex: 0),
+                  builder: (context) => const HomePage(pageIndex: 1),
                 ),
               );
               break;
@@ -464,77 +597,72 @@ class _ProjectDetailState extends State<ProjectDetail> {
     );
   }
 
-  Future<void> _dialogBuilder(BuildContext context) {
+  Future<void> _joinDialogBuilder(BuildContext context) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return SimpleDialog(
+        return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           title: const TextUtil(
-            text: 'How to you want to add a member?',
+            text: 'Would you like to join into this pardna?',
             color: Colors.black,
             size: 15,
           ),
-          children: [
+          actions: <Widget>[
             TextButton(
-              child: Container(
-                height: 50,
-                margin: const EdgeInsets.symmetric(horizontal: 15),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                alignment: Alignment.center,
-                child: const TextUtil(
-                  text: "Add users as your members",
-                  color: Colors.white,
-                  weight: true,
-                ),
-              ),
+              child: const Text('No'),
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddMember(),
-                  ),
-                );
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Container(
-                height: 50,
-                margin: const EdgeInsets.symmetric(horizontal: 15),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                alignment: Alignment.center,
-                child: const TextUtil(
-                  text: "Add from phone's contacts book",
-                  color: Colors.white,
-                  weight: true,
-                ),
-              ),
+              child: const Text('Yes'),
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddContacts(),
-                  ),
-                );
+                ProjectService.addProjectMember(globals.userInfo['_id'],
+                        globals.projectInfo['_id'], 'joining')
+                    .then((res) =>
+                        {if (res.statusCode == 200) getProjectMembers()});
+                Navigator.of(context).pop();
               },
             ),
-            const SizedBox(height: 15),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _acceptDialogBuilder(BuildContext context, int index) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          title: const TextUtil(
+            text:
+                'This pardna\'s owner has invited you.\nWould you like to accept this invitation?',
+            color: Colors.black,
+            size: 15,
+          ),
+          actions: <Widget>[
             TextButton(
-              child: const TextUtil(
-                text: 'Colse',
-                size: 15,
-                color: Colors.green,
-              ),
+              child: const Text('Deny'),
               onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Accept'),
+              onPressed: () {
+                ProjectService.updateProjectMember(globals.projectInfo['_id'],
+                        members[index]['_id'], 'active')
+                    .then((res) => {
+                          if (res.statusCode == 200)
+                            setState(() {
+                              members[index]['status'] = 'active';
+                            })
+                        });
                 Navigator.of(context).pop();
               },
             ),

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:pardna/utils/network.dart';
 
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
@@ -6,15 +9,26 @@ import 'package:pardna/utils/headers.dart';
 import 'package:pardna/utils/globals.dart' as globals;
 
 class Landing extends StatefulWidget {
-  const Landing({Key? key}) : super(key: key);
+  const Landing({super.key});
 
   @override
   State<Landing> createState() => _LandingState();
 }
 
 class _LandingState extends State<Landing> {
-  final List<String> items =
-      List<String>.generate(20, (index) => 'Item $index');
+  List<dynamic> projects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getProjectMembers();
+  }
+
+  void getProjectMembers() {
+    ProjectService.getAllProjects().then((res) => setState(() {
+          projects = jsonDecode(res.body)['data'];
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +72,8 @@ class _LandingState extends State<Landing> {
               ),
             ),
             Container(
-              height: 530,
+              constraints: const BoxConstraints(maxHeight: 550),
+              width: 500,
               margin: const EdgeInsets.symmetric(vertical: 15),
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
               decoration: BoxDecoration(
@@ -66,47 +81,49 @@ class _LandingState extends State<Landing> {
                 color: Colors.white,
               ),
               child: SingleChildScrollView(
-                  child: Column(
-                children: [
-                  for (int index = 0; index < items.length; index++)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextUtil(
-                                    text: "Feb",
-                                    color: Colors.black,
-                                    size: 15,
-                                    weight: true,
-                                  ),
-                                  TextUtil(
-                                    text: "0 / 2 Weeks",
-                                    color: Colors.green,
-                                    size: 12,
-                                  )
-                                ],
-                              ),
-                              TextUtil(
-                                text: "(0 %)",
-                                color: Colors.green,
-                                size: 12,
-                              )
-                            ],
+                child: Column(
+                  children: [
+                    for (int index = 0; index < projects.length; index++)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextUtil(
+                                      text: projects[index]['name'],
+                                      color: Colors.black,
+                                      size: 15,
+                                      weight: true,
+                                    ),
+                                    TextUtil(
+                                      text:
+                                          "0 / ${projects[index]['number']} Weeks",
+                                      color: Colors.green,
+                                      size: 12,
+                                    )
+                                  ],
+                                ),
+                                const TextUtil(
+                                  text: "(0 %)",
+                                  color: Colors.green,
+                                  size: 12,
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        if (index != items.length - 1) const Divider(),
-                      ],
-                    ),
-                ],
-              )),
+                          if (index != projects.length - 1) const Divider(),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

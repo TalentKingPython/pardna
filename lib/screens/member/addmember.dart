@@ -7,13 +7,12 @@ import 'package:pardna/screens/home.dart';
 import 'package:pardna/utils/network.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
-import 'package:pardna/utils/globals.dart' as globals;
 
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class AddMember extends StatefulWidget {
-  const AddMember({Key? key}) : super(key: key);
+  const AddMember({super.key});
 
   @override
   State<AddMember> createState() => _AddMemberState();
@@ -144,8 +143,6 @@ class _AddMemberState extends State<AddMember> {
                                                     element['_id'] !=
                                                     contacts[i]['_id'])
                                                 .toList();
-                                            globals.userInfo = jsonDecode(
-                                                response.body)['data'];
                                           });
                                         }
                                       },

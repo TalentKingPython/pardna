@@ -13,7 +13,7 @@ import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class AddProject extends StatefulWidget {
-  const AddProject({Key? key}) : super(key: key);
+  const AddProject({super.key});
 
   @override
   State<AddProject> createState() => _AddProjectState();
@@ -345,7 +345,8 @@ class _AddProjectState extends State<AddProject> {
                           const SizedBox(
                             width: 80,
                             height: 80,
-                            child: Icon(Icons.celebration, color: Colors.green),
+                            child:
+                                Icon(Icons.auto_awesome, color: Colors.green),
                           ),
                           SizedBox(
                             width: 360,

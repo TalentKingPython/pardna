@@ -141,4 +141,73 @@ class ProjectService {
     );
     return response;
   }
+
+  static Future<http.Response> addProjectMember(
+      memberId, projectId, status) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.post(
+      Uri.parse('$baseURL/project/addmember'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+      body: jsonEncode(<String, String>{
+        'member_id': memberId,
+        'project_id': projectId,
+        'status': status,
+      }),
+    );
+    return response;
+  }
+
+  static Future<http.Response> getAllUnaddedProjectMembers(projectId) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.get(
+      Uri.parse('$baseURL/project/unmember/$projectId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
+  static Future<http.Response> getAllProjectMembers(projectId) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.get(
+      Uri.parse('$baseURL/project/member/$projectId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
+  static Future<http.Response> updateProjectMember(
+      projectId, memberId, status) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.put(
+      Uri.parse('$baseURL/project/member/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+      body: jsonEncode({
+        'projectId': projectId,
+        'memberId': memberId,
+        'status': status,
+      }),
+    );
+
+    return response;
+  }
 }

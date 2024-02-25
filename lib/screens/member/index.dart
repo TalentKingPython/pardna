@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 
-import 'package:pardna/screens/member/addcontacts.dart';
+// import 'package:pardna/screens/member/addcontacts.dart';
 import 'package:pardna/screens/member/addmember.dart';
 import 'package:pardna/utils/network.dart';
 import 'package:pardna/utils/text_utils.dart';
@@ -11,7 +11,7 @@ import 'package:pardna/utils/headers.dart';
 import 'package:pardna/utils/globals.dart' as globals;
 
 class Member extends StatefulWidget {
-  const Member({Key? key}) : super(key: key);
+  const Member({super.key});
 
   @override
   State<Member> createState() => _MemberState();
@@ -200,31 +200,31 @@ class _MemberState extends State<Member> {
                 );
               },
             ),
-            TextButton(
-              child: Container(
-                height: 50,
-                margin: const EdgeInsets.symmetric(horizontal: 15),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                alignment: Alignment.center,
-                child: const TextUtil(
-                  text: "Add from phone's contacts book",
-                  color: Colors.white,
-                  weight: true,
-                ),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddContacts(),
-                  ),
-                );
-              },
-            ),
+            // TextButton(
+            //   child: Container(
+            //     height: 50,
+            //     margin: const EdgeInsets.symmetric(horizontal: 15),
+            //     decoration: BoxDecoration(
+            //       color: Colors.green,
+            //       borderRadius: BorderRadius.circular(8),
+            //     ),
+            //     alignment: Alignment.center,
+            //     child: const TextUtil(
+            //       text: "Add from phone's contacts book",
+            //       color: Colors.white,
+            //       weight: true,
+            //     ),
+            //   ),
+            //   onPressed: () {
+            //     Navigator.pop(context);
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => const AddContacts(),
+            //       ),
+            //     );
+            //   },
+            // ),
             const SizedBox(height: 15),
             TextButton(
               child: const TextUtil(
