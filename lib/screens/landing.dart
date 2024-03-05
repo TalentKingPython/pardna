@@ -1,12 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:pardna/utils/network.dart';
 
+import 'package:pardna/utils/network.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
-
-import 'package:pardna/utils/globals.dart' as globals;
+import 'package:pardna/utils/globals.dart';
 
 class Landing extends StatefulWidget {
   const Landing({super.key});
@@ -52,7 +51,7 @@ class _LandingState extends State<Landing> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: TextUtil(
-                  text: 'Hello, ${globals.userInfo['name']}',
+                  text: 'Hello, ${userInfo['name']}',
                   color: Colors.black,
                   size: 25,
                   weight: true,

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:pardna/screens/landing.dart';
 import 'package:pardna/screens/login.dart';
 import 'package:pardna/screens/member/index.dart';
 import 'package:pardna/screens/projects/index.dart';
+import 'package:pardna/screens/stripe/index.dart';
 import 'package:pardna/utils/text_utils.dart';
+import 'package:pardna/utils/globals.dart';
 
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
@@ -58,18 +61,40 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: PageView(
-          controller: controller,
-          children: const [
-            Landing(),
-            Project(),
-            Member(),
+        child: Stack(
+          children: [
+            PageView(
+              controller: controller,
+              children: const [
+                Landing(),
+                Project(),
+                Member(),
+              ],
+              onPageChanged: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+            ),
+            if (userInfo['payment_method'] != 'verified')
+              Positioned(
+                  top: 90,
+                  right: 30,
+                  child: GestureDetector(
+                    child: const Icon(
+                      Icons.add_card_rounded,
+                      color: Colors.green,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StripeService(),
+                        ),
+                      );
+                    },
+                  )),
           ],
-          onPageChanged: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
         ),
       ),
       bottomNavigationBar: StylishBottomBar(
@@ -122,6 +147,7 @@ class _HomePageState extends State<HomePage> {
         enableFeedback: false,
         onPressed: () {},
         backgroundColor: Colors.green,
+        shape: const CircleBorder(),
         child: Icon(
           iconList[_selectedIndex],
           size: 40,
@@ -193,8 +219,10 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.black,
                 ),
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Login()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Login()),
+                  );
                 },
               ),
             ],

@@ -36,6 +36,20 @@ class AuthService {
     );
     return response;
   }
+
+  static Future<http.Response> getProfile() async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.get(
+      Uri.parse('$baseURL/auth/profile'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
 }
 
 class UserService {

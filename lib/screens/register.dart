@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:pardna/screens/home.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/network.dart';
-import 'package:pardna/utils/globals.dart' as globals;
+import 'package:pardna/utils/globals.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -218,10 +218,9 @@ class _RegisterState extends State<Register> {
                                   if (!context.mounted) return;
                                   if (response.statusCode == 200) {
                                     setState(() {
-                                      globals.authToken = jsonDecode(
+                                      authToken = jsonDecode(
                                           response.body)['authToken'];
-                                      globals.userInfo =
-                                          jsonDecode(response.body);
+                                      userInfo = jsonDecode(response.body);
                                     });
                                     Navigator.push(
                                       context,

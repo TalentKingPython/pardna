@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:pardna/screens/projects/addproject.dart';
 import 'package:pardna/screens/projects/details.dart';
 import 'package:pardna/utils/network.dart';
-import 'package:pardna/utils/globals.dart' as globals;
+import 'package:pardna/utils/globals.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
+import 'package:pardna/screens/stripe/index.dart';
 
 class Project extends StatefulWidget {
   const Project({super.key});
@@ -120,12 +121,43 @@ class _ProjectState extends State<Project> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AddProject(),
-                          ),
-                        );
+                        if (userInfo['payment_method'] == 'verified') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddProject(),
+                            ),
+                          );
+                        } else {
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title:
+                                  const Text('You are not payment verified!'),
+                              content: const Text(
+                                  'You have to verify your payment method to create pardna. Would you like to verify your payment method?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('No'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const StripeService(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       },
                     )
                   ],
@@ -157,11 +189,34 @@ class _ProjectState extends State<Project> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    TextUtil(
-                                      text: projects[i]['name'],
-                                      color: Colors.black,
-                                      weight: true,
-                                      size: 15,
+                                    Row(
+                                      children: [
+                                        TextUtil(
+                                          text: projects[i]['name'],
+                                          color: Colors.black,
+                                          weight: true,
+                                          size: 15,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        if ((projects[i]['paid_members']
+                                                    as Map<String, dynamic>?)
+                                                ?.keys
+                                                .where((key) =>
+                                                    (projects[i]['paid_members']
+                                                        as Map<String,
+                                                            dynamic>?)?[key] ==
+                                                    'awarded')
+                                                .toList()
+                                                .contains(userInfo[
+                                                    'stripe_customer_token']) ??
+                                            false)
+                                          const TextUtil(
+                                            text: 'Awarded',
+                                            color: Colors.red,
+                                            weight: true,
+                                            size: 12,
+                                          ),
+                                      ],
                                     ),
                                     TextUtil(
                                       text:
@@ -309,16 +364,50 @@ class _ProjectState extends State<Project> {
                                   children: [
                                     TextButton(
                                       onPressed: () {
-                                        setState(() {
-                                          globals.projectInfo = projects[i];
-                                        });
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ProjectDetail(),
-                                          ),
-                                        );
+                                        if (userInfo['payment_method'] ==
+                                            "verified") {
+                                          setState(() {
+                                            projectInfo = projects[i];
+                                          });
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const ProjectDetail(),
+                                            ),
+                                          );
+                                        } else {
+                                          showDialog<String>(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                              title: const Text(
+                                                  'You are not payment verified!'),
+                                              content: const Text(
+                                                  'You have to verify your payment method to create pardna. Would you like to verify your payment method?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: const Text('No'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const StripeService(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: const Text('Yes'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }
                                       },
                                       child: Container(
                                         height: 40,

@@ -237,6 +237,7 @@ class _AddMemberState extends State<AddMember> {
         enableFeedback: false,
         onPressed: () {},
         backgroundColor: Colors.green,
+        shape: const CircleBorder(),
         child: const Icon(
           Icons.groups,
           size: 40,

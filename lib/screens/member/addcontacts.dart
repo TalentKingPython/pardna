@@ -229,6 +229,7 @@ class _AddContactsState extends State<AddContacts> {
         enableFeedback: false,
         onPressed: () {},
         backgroundColor: Colors.green,
+        shape: const CircleBorder(),
         child: const Icon(
           Icons.groups,
           size: 40,

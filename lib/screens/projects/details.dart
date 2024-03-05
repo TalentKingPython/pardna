@@ -587,6 +587,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
         enableFeedback: false,
         onPressed: () {},
         backgroundColor: Colors.green,
+        shape: const CircleBorder(),
         child: const Icon(
           Icons.task,
           size: 40,
@@ -649,6 +650,14 @@ class _ProjectDetailState extends State<ProjectDetail> {
             TextButton(
               child: const Text('Deny'),
               onPressed: () {
+                ProjectService.updateProjectMember(globals.projectInfo['_id'],
+                        members[index]['_id'], 'denied')
+                    .then((res) => {
+                          if (res.statusCode == 200)
+                            setState(() {
+                              members[index]['status'] = 'denied';
+                            })
+                        });
                 Navigator.of(context).pop();
               },
             ),

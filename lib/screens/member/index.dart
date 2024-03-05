@@ -133,7 +133,7 @@ class _MemberState extends State<Member> {
                                 )
                               ],
                             ),
-                            Divider(),
+                            const Divider(),
                           ],
                         ),
                       TextButton(
