@@ -4,10 +4,8 @@ import 'dart:ui';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pardna/screens/home.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/network.dart';
-import 'package:pardna/utils/globals.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -217,17 +215,14 @@ class _RegisterState extends State<Register> {
                                   print(response.statusCode);
                                   if (!context.mounted) return;
                                   if (response.statusCode == 200) {
-                                    setState(() {
-                                      authToken = jsonDecode(
-                                          response.body)['authToken'];
-                                      userInfo = jsonDecode(response.body);
-                                    });
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const HomePage(),
+                                    const snackBar = SnackBar(
+                                      content: Text(
+                                        'You have registered your account successfully!',
                                       ),
                                     );
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
                                   } else {
                                     print(response.statusCode);
                                     final snackBar = SnackBar(
