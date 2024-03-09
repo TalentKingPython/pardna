@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.flutter.stripe.example">
    <application
-        android:label="example"
+        android:label="iPardna"
         android:icon="@mipmap/ic_launcher">
 
         <meta-data

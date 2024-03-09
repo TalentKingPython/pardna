@@ -127,10 +127,8 @@ class _ProjectDetailState extends State<ProjectDetail> {
                     const SizedBox(height: 10),
                     Card(
                       elevation: 0,
+                      color: Colors.white,
                       shape: const RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Colors.white,
-                        ),
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                       child: Column(

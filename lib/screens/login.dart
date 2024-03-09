@@ -122,8 +122,10 @@ class _LoginState extends State<Login> {
                         Container(
                           height: 35,
                           decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(color: Colors.green))),
+                            border: Border(
+                              bottom: BorderSide(color: Colors.green),
+                            ),
+                          ),
                           child: TextFormField(
                             controller: _passwordController,
                             obscureText: showPassword,

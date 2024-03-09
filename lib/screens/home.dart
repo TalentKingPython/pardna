@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pardna/screens/admin/index.dart';
 
 import 'package:pardna/screens/landing.dart';
 import 'package:pardna/screens/login.dart';
@@ -76,31 +77,57 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
+            if (userInfo['roles'].contains('admin'))
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: GestureDetector(
+                  child: const Row(
+                    children: [
+                      TextUtil(
+                        text: 'Go to Admin Page',
+                        color: Colors.green,
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Colors.green,
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminPage(),
+                      ),
+                    );
+                  },
+                ),
+              ),
             if (userInfo['payment_method'] != 'verified')
               Positioned(
-                  top: 90,
-                  right: 30,
-                  child: GestureDetector(
-                    child: const Icon(
-                      Icons.add_card_rounded,
-                      color: Colors.green,
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const StripeService(),
-                        ),
-                      );
-                    },
-                  )),
+                top: 90,
+                right: 30,
+                child: GestureDetector(
+                  child: const Icon(
+                    Icons.add_card_rounded,
+                    color: Colors.green,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const StripeService(),
+                      ),
+                    );
+                  },
+                ),
+              ),
           ],
         ),
       ),
       bottomNavigationBar: StylishBottomBar(
-        option: AnimatedBarOptions(
-          iconSize: 40,
-        ),
+        option: AnimatedBarOptions(iconSize: 40),
         backgroundColor: Colors.green,
         items: [
           BottomBarItem(
@@ -147,7 +174,6 @@ class _HomePageState extends State<HomePage> {
         enableFeedback: false,
         onPressed: () {},
         backgroundColor: Colors.green,
-        shape: const CircleBorder(),
         child: Icon(
           iconList[_selectedIndex],
           size: 40,

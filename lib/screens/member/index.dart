@@ -84,7 +84,7 @@ class _MemberState extends State<Member> {
                 color: Colors.white,
               ),
               child: SizedBox(
-                height: 540,
+                height: 550,
                 width: 400,
                 child: SingleChildScrollView(
                   child: Column(
@@ -228,7 +228,7 @@ class _MemberState extends State<Member> {
             const SizedBox(height: 15),
             TextButton(
               child: const TextUtil(
-                text: 'Colse',
+                text: 'Close',
                 size: 15,
                 color: Colors.green,
               ),

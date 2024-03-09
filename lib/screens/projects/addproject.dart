@@ -83,76 +83,46 @@ class _AddProjectState extends State<AddProject> {
                   Navigator.pop(context);
                 },
               ),
-              Container(
-                height: 700,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextUtil(
-                          text: 'Create New Pardna',
-                          size: 25,
-                          color: Colors.black,
-                          weight: true,
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextUtil(
-                          text: 'Project name',
-                          size: 17,
-                          color: Colors.black,
-                          weight: true,
-                        ),
-                      ),
-                      Container(
-                        height: 48,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextFormField(
-                          controller: _nameController,
-                          style: const TextStyle(color: Colors.black),
-                          decoration: const InputDecoration(
-                            hintText: 'Enter name for new pardna...',
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w200,
-                            ),
-                            fillColor: Colors.black,
-                            border: InputBorder.none,
+              Expanded(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextUtil(
+                            text: 'Create New Pardna',
+                            size: 25,
+                            color: Colors.black,
+                            weight: true,
                           ),
                         ),
-                      ),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextUtil(
-                          text: 'Hand amount [\$]',
-                          size: 17,
-                          color: Colors.black,
-                          weight: true,
+                        const SizedBox(height: 15),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextUtil(
+                            text: 'Project name',
+                            size: 17,
+                            color: Colors.black,
+                            weight: true,
+                          ),
                         ),
-                      ),
-                      Container(
-                        height: 48,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextFormField(
+                        Container(
+                          height: 48,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextFormField(
+                            controller: _nameController,
                             style: const TextStyle(color: Colors.black),
                             decoration: const InputDecoration(
-                              hintText: 'Enter value of hand amount...',
+                              hintText: 'Enter name for new pardna...',
                               hintStyle: TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w200,
@@ -160,285 +130,320 @@ class _AddProjectState extends State<AddProject> {
                               fillColor: Colors.black,
                               border: InputBorder.none,
                             ),
+                          ),
+                        ),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextUtil(
+                            text: 'Hand amount [\$]',
+                            size: 17,
+                            color: Colors.black,
+                            weight: true,
+                          ),
+                        ),
+                        Container(
+                          height: 48,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextFormField(
+                              style: const TextStyle(color: Colors.black),
+                              decoration: const InputDecoration(
+                                hintText: 'Enter value of hand amount...',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w200,
+                                ),
+                                fillColor: Colors.black,
+                                border: InputBorder.none,
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  try {
+                                    handAmount = double.parse(value);
+                                  } catch (e) {
+                                    handAmount = 0;
+                                  }
+                                });
+                              }),
+                        ),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextUtil(
+                            text: 'Expected Number of members',
+                            size: 15,
+                            color: Colors.black,
+                            weight: true,
+                          ),
+                        ),
+                        Container(
+                          height: 48,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextFormField(
+                            initialValue: '0',
+                            style: const TextStyle(color: Colors.black),
+                            decoration: const InputDecoration(
+                              fillColor: Colors.black,
+                              border: InputBorder.none,
+                            ),
                             onChanged: (value) {
                               setState(() {
                                 try {
-                                  handAmount = double.parse(value);
+                                  numberOfMember = int.parse(value);
                                 } catch (e) {
-                                  handAmount = 0;
+                                  numberOfMember = 0;
                                 }
                               });
-                            }),
-                      ),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextUtil(
-                          text: 'Expected Number of members',
-                          size: 15,
-                          color: Colors.black,
-                          weight: true,
-                        ),
-                      ),
-                      Container(
-                        height: 48,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextFormField(
-                          initialValue: '0',
-                          style: const TextStyle(color: Colors.black),
-                          decoration: const InputDecoration(
-                            fillColor: Colors.black,
-                            border: InputBorder.none,
+                            },
                           ),
-                          onChanged: (value) {
-                            setState(() {
-                              try {
-                                numberOfMember = int.parse(value);
-                              } catch (e) {
-                                numberOfMember = 0;
-                              }
-                            });
-                          },
                         ),
-                      ),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextUtil(
-                          text: 'Period',
-                          size: 15,
-                          color: Colors.black,
-                          weight: true,
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextUtil(
+                            text: 'Period',
+                            size: 15,
+                            color: Colors.black,
+                            weight: true,
+                          ),
                         ),
-                      ),
-                      Container(
-                        height: 48,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextButton(
-                          onPressed: () {
-                            _selectDate(context);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _startDate != null
-                                  ? Row(
-                                      children: [
-                                        Text(
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(_startDate!),
-                                          style: const TextStyle(
-                                            color: Colors.black,
+                        Container(
+                          height: 48,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextButton(
+                            onPressed: () {
+                              _selectDate(context);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _startDate != null
+                                    ? Row(
+                                        children: [
+                                          Text(
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(_startDate!),
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                            ),
                                           ),
+                                          const Text(
+                                            '  to  ',
+                                            style: TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Text(
+                                            DateFormat('yyyy-MM-dd').format(
+                                                getEndDate(_startDate!,
+                                                    duration, numberOfMember)),
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    : const Text(
+                                        'Choose Start Date...',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w200,
                                         ),
-                                        const Text(
-                                          '  to  ',
-                                          style: TextStyle(
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                        Text(
-                                          DateFormat('yyyy-MM-dd').format(
-                                              getEndDate(_startDate!, duration,
-                                                  numberOfMember)),
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  : const Text(
-                                      'Choose Start Date...',
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.w200,
                                       ),
-                                    ),
-                              const Icon(
-                                Icons.calendar_today,
-                                color: Colors.green,
-                              ),
-                            ],
+                                const Icon(
+                                  Icons.calendar_today,
+                                  color: Colors.green,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextUtil(
-                          text: 'Payment/Draw Cycle',
-                          size: 15,
-                          color: Colors.black,
-                          weight: true,
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextUtil(
+                            text: 'Payment/Draw Cycle',
+                            size: 15,
+                            color: Colors.black,
+                            weight: true,
+                          ),
                         ),
-                      ),
-                      Container(
-                        height: 48,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: DropdownButton<String>(
-                          selectedItemBuilder: (context) {
-                            return <String>[
+                        Container(
+                          height: 48,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: DropdownButton<String>(
+                            selectedItemBuilder: (context) {
+                              return <String>[
+                                'Daily',
+                                'Weekly',
+                                'Monthly',
+                                'Yearly'
+                              ].map<Padding>((String value) {
+                                return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 13),
+                                    child: TextUtil(
+                                      text: value,
+                                      color: Colors.black,
+                                    ));
+                              }).toList();
+                            },
+                            value: duration,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                duration = newValue!;
+                              });
+                            },
+                            hint: const Text(
+                              'Choose one of choises...',
+                              style: TextStyle(fontWeight: FontWeight.w200),
+                            ),
+                            items: <String>[
                               'Daily',
                               'Weekly',
                               'Monthly',
                               'Yearly'
-                            ].map<Padding>((String value) {
-                              return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 13),
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Align(
+                                  alignment: Alignment.center,
                                   child: TextUtil(
                                     text: value,
+                                    size: 15,
                                     color: Colors.black,
-                                  ));
-                            }).toList();
-                          },
-                          value: duration,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              duration = newValue!;
-                            });
-                          },
-                          hint: const Text(
-                            'Choose one of choises...',
-                            style: TextStyle(fontWeight: FontWeight.w200),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            style: const TextStyle(color: Colors.black),
+                            underline: Container(),
+                            icon: const Icon(Icons.arrow_drop_down),
+                            isExpanded: true,
                           ),
-                          items: <String>[
-                            'Daily',
-                            'Weekly',
-                            'Monthly',
-                            'Yearly'
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: TextUtil(
-                                  text: value,
-                                  size: 15,
-                                  color: Colors.black,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            border: Border.all(
+                                width: 2, color: Colors.green.withOpacity(0.5)),
+                          ),
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 80,
+                                height: 80,
+                                child: Icon(
+                                  Icons.auto_awesome,
+                                  color: Colors.green,
                                 ),
                               ),
-                            );
-                          }).toList(),
-                          style: const TextStyle(color: Colors.black),
-                          underline: Container(),
-                          icon: const Icon(Icons.arrow_drop_down),
-                          isExpanded: true,
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          border: Border.all(
-                              width: 2, color: Colors.green.withOpacity(0.5)),
-                        ),
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 80,
-                              height: 80,
-                              child:
-                                  Icon(Icons.auto_awesome, color: Colors.green),
-                            ),
-                            SizedBox(
-                              width: 360,
-                              child: Wrap(
-                                spacing: 5,
-                                children: [
-                                  Text(
-                                      'In $numberOfMember ${durationMode(duration)}, with'),
-                                  Text(
-                                    '$numberOfMember',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+                              Expanded(
+                                child: Wrap(
+                                  spacing: 5,
+                                  children: [
+                                    Text(
+                                        'In $numberOfMember ${durationMode(duration)}, with'),
+                                    Text(
+                                      '$numberOfMember',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                      ),
                                     ),
-                                  ),
-                                  const Text('members,'),
-                                  Text(
-                                    '\$$handAmount',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+                                    const Text('members,'),
+                                    Text(
+                                      '\$$handAmount',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                      ),
                                     ),
-                                  ),
-                                  const Text('will'),
-                                  const Text('be'),
-                                  const Text('debited'),
-                                  const Text('from'),
-                                  const Text('every draw, You\'ll earn'),
-                                  const Text('a total of'),
-                                  Text(
-                                    '\$${(handAmount * numberOfMember).toStringAsFixed(2)} ',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+                                    const Text('will'),
+                                    const Text('be'),
+                                    const Text('debited'),
+                                    const Text('from'),
+                                    const Text('every draw, You\'ll earn'),
+                                    const Text('a total of'),
+                                    Text(
+                                      '\$${(handAmount * numberOfMember).toStringAsFixed(2)} ',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                      ),
                                     ),
-                                  ),
-                                  const Text('by '),
-                                  const Text('the end '),
-                                  const Text('of this Pardna.'),
-                                ],
+                                    const Text('by'),
+                                    const Text('the end'),
+                                    const Text('of'),
+                                    const Text('this'),
+                                    const Text('Pardna.'),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        child: Container(
-                          height: 55,
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          alignment: Alignment.center,
-                          child: const TextUtil(
-                            text: "CREATE",
-                            size: 17,
-                            color: Colors.white,
-                            weight: true,
+                              const SizedBox(width: 15),
+                            ],
                           ),
                         ),
-                        onTap: () async {
-                          final response = await addNewProject();
-                          if (!context.mounted) return;
-                          if (response.statusCode == 200) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const HomePage(pageIndex: 1),
-                              ),
-                            );
-                          } else {
-                            print(response.statusCode);
-                            final snackBar = SnackBar(
-                              content: Text(
-                                jsonDecode(response.body)['message'],
-                              ),
-                            );
+                        GestureDetector(
+                          child: Container(
+                            height: 55,
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            alignment: Alignment.center,
+                            child: const TextUtil(
+                              text: "CREATE",
+                              size: 17,
+                              color: Colors.white,
+                              weight: true,
+                            ),
+                          ),
+                          onTap: () async {
+                            final response = await addNewProject();
+                            if (!context.mounted) return;
+                            if (response.statusCode == 200) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const HomePage(pageIndex: 1),
+                                ),
+                              );
+                            } else {
+                              print(response.statusCode);
+                              final snackBar = SnackBar(
+                                content: Text(
+                                  jsonDecode(response.body)['message'],
+                                ),
+                              );
 
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          }
-                        },
-                      ),
-                    ],
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -447,9 +452,7 @@ class _AddProjectState extends State<AddProject> {
         ),
       ),
       bottomNavigationBar: StylishBottomBar(
-        option: AnimatedBarOptions(
-          iconSize: 40,
-        ),
+        option: AnimatedBarOptions(iconSize: 40),
         backgroundColor: Colors.green,
         items: [
           BottomBarItem(
@@ -511,6 +514,7 @@ class _AddProjectState extends State<AddProject> {
               );
               break;
             default:
+              break;
           }
         },
       ),

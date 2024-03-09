@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 
 import 'package:pardna/screens/home.dart';
@@ -47,114 +48,115 @@ class _AddMemberState extends State<AddMember> {
                   Navigator.pop(context);
                 },
               ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: 43,
-                      padding: const EdgeInsets.only(left: 10),
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Colors.black38))),
-                      child: TextFormField(
-                        style: const TextStyle(color: Colors.black),
-                        decoration: const InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.close,
-                            color: Colors.black38,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: 43,
+                        padding: const EdgeInsets.only(left: 10),
+                        decoration: const BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(color: Colors.black38))),
+                        child: TextFormField(
+                          style: const TextStyle(color: Colors.black),
+                          decoration: const InputDecoration(
+                            suffixIcon: Icon(
+                              Icons.close,
+                              color: Colors.black38,
+                            ),
+                            hintStyle: TextStyle(fontSize: 16),
+                            hintText: 'Search users by name',
+                            border: InputBorder.none,
                           ),
-                          hintStyle: TextStyle(fontSize: 16),
-                          hintText: 'Search users by name',
-                          border: InputBorder.none,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      height: 600,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            for (int i = 0; i < contacts.length; i++)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: Row(
-                                  children: [
-                                    const AdvancedAvatar(
-                                      size: 50,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.green),
-                                      child: Icon(
-                                        Icons.account_circle,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        TextUtil(
-                                          text: contacts[i]['name'],
-                                          size: 13,
-                                          weight: true,
-                                          color: Colors.black,
-                                        ),
-                                        TextUtil(
-                                          text: contacts[i]['email'],
-                                          size: 12,
-                                          color: Colors.black87,
-                                        ),
-                                        TextUtil(
-                                          text: contacts[i]['phone'] ??
-                                              'No phone number',
-                                          size: 12,
-                                          color: Colors.black87,
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    TextButton(
-                                      child: Container(
-                                        width: 40,
-                                        height: 40,
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              for (int i = 0; i < contacts.length; i++)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: Row(
+                                    children: [
+                                      const AdvancedAvatar(
+                                        size: 50,
                                         decoration: BoxDecoration(
-                                            color: Colors.green,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        child: const Icon(
-                                          Icons.add,
-                                          color: Colors.black,
+                                            shape: BoxShape.circle,
+                                            color: Colors.green),
+                                        child: Icon(
+                                          Icons.account_circle,
+                                          color: Colors.white,
+                                          size: 30,
                                         ),
                                       ),
-                                      onPressed: () async {
-                                        final response =
-                                            await UserService.addTeamMember(
-                                                contacts[i]['_id']);
-                                        if (!context.mounted) return;
-                                        if (response.statusCode == 200) {
-                                          setState(() {
-                                            contacts = contacts
-                                                .where((element) =>
-                                                    element['_id'] !=
-                                                    contacts[i]['_id'])
-                                                .toList();
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  ],
+                                      const SizedBox(width: 5),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextUtil(
+                                            text: contacts[i]['name'],
+                                            size: 13,
+                                            weight: true,
+                                            color: Colors.black,
+                                          ),
+                                          TextUtil(
+                                            text: contacts[i]['email'],
+                                            size: 12,
+                                            color: Colors.black87,
+                                          ),
+                                          TextUtil(
+                                            text: contacts[i]['phone'] ??
+                                                'No phone number',
+                                            size: 12,
+                                            color: Colors.black87,
+                                          ),
+                                        ],
+                                      ),
+                                      const Spacer(),
+                                      TextButton(
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                              color: Colors.green,
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          child: const Icon(
+                                            Icons.add,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          final response =
+                                              await UserService.addTeamMember(
+                                                  contacts[i]['_id']);
+                                          if (!context.mounted) return;
+                                          if (response.statusCode == 200) {
+                                            setState(() {
+                                              contacts = contacts
+                                                  .where((element) =>
+                                                      element['_id'] !=
+                                                      contacts[i]['_id'])
+                                                  .toList();
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               )
             ],

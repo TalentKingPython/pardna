@@ -18,7 +18,7 @@ class HomeHeader extends StatelessWidget {
             onPressed: onPressed,
           ),
           const TextUtil(
-            text: "PARDNA",
+            text: "iPardna",
             weight: true,
             color: Colors.black,
             size: 25,

@@ -164,8 +164,7 @@ class _ProjectState extends State<Project> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 540,
+            Expanded(
               child: SingleChildScrollView(
                   child: Column(
                 children: [
@@ -174,10 +173,8 @@ class _ProjectState extends State<Project> {
                       children: [
                         Card(
                           elevation: 0,
+                          color: Colors.white,
                           shape: const RoundedRectangleBorder(
-                            side: BorderSide(
-                              color: Colors.white,
-                            ),
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                           ),
                           child: ExpansionTile(
