@@ -67,6 +67,20 @@ class UserService {
     return response;
   }
 
+  static Future<http.Response> getAllUsers() async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.get(
+      Uri.parse('$baseURL/user'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
   static Future<http.Response> addTeamMember(memberId) async {
     final baseURL = globals.baseURL;
     final authToken = globals.authToken;
@@ -96,6 +110,65 @@ class UserService {
       },
       body: jsonEncode(<String, List>{
         'members': members,
+      }),
+    );
+    return response;
+  }
+
+  static Future<http.Response> getAllAdminUsers() async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.get(
+      Uri.parse('$baseURL/user/admin'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
+  static Future<http.Response> getAllTier2Users() async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.get(
+      Uri.parse('$baseURL/user/tier2'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
+  static Future<http.Response> getAllTier1Users() async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.get(
+      Uri.parse('$baseURL/user/tier1'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
+  static Future<http.Response> setUserRoles(userId, roles) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.post(
+      Uri.parse('$baseURL/user/roles/$userId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+      body: jsonEncode(<String, List>{
+        'roles': roles,
       }),
     );
     return response;

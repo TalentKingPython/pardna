@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:pardna/screens/home.dart';
 import 'package:pardna/screens/register.dart';
@@ -20,8 +21,10 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   bool showPassword = true;
+  bool saveCredential = false;
 
   Future<Response> _signinWithEmail() async {
     final response = await AuthService.loginWithEmail(
@@ -30,6 +33,18 @@ class _LoginState extends State<Login> {
     );
 
     return response;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _prefs.then((SharedPreferences prefs) {
+      setState(() {
+        saveCredential = prefs.getBool('saveCredential') ?? false;
+        _emailController.text = prefs.getString('email') ?? '';
+        _passwordController.text = prefs.getString('password') ?? '';
+      });
+    });
   }
 
   @override
@@ -150,11 +165,29 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         const Spacer(),
-                        const TextUtil(
-                          text: "Forgot password?",
-                          size: 13,
-                          weight: true,
-                          color: Colors.black,
+                        Row(
+                          children: [
+                            const TextUtil(
+                              text: "Forgot password?",
+                              size: 13,
+                              weight: true,
+                              color: Colors.black,
+                            ),
+                            const Spacer(),
+                            Checkbox(
+                              value: saveCredential,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  saveCredential = value ?? false;
+                                });
+                              },
+                            ),
+                            const TextUtil(
+                              text: "Save Password",
+                              size: 12,
+                              color: Colors.black,
+                            ),
+                          ],
                         ),
                         const Spacer(),
                         TextButton(
@@ -173,8 +206,17 @@ class _LoginState extends State<Login> {
                           ),
                           onPressed: () async {
                             final response = await _signinWithEmail();
-                            if (!context.mounted) return;
                             if (response.statusCode == 200) {
+                              if (saveCredential) {
+                                final SharedPreferences prefs = await _prefs;
+                                await prefs.setBool(
+                                    'saveCredential', saveCredential);
+                                await prefs.setString(
+                                    'email', _emailController.text);
+                                await prefs.setString(
+                                    'password', _passwordController.text);
+                              }
+                              if (!context.mounted) return;
                               setState(() {
                                 authToken =
                                     jsonDecode(response.body)['authToken'];
@@ -193,7 +235,6 @@ class _LoginState extends State<Login> {
                                   jsonDecode(response.body)['message'],
                                 ),
                               );
-
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
                             }

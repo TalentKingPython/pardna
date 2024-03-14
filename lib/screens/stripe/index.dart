@@ -154,6 +154,7 @@ class _StripeServiceState extends State<StripeService> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
+      print(e);
       rethrow;
     }
   }

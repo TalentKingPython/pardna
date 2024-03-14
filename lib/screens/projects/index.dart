@@ -432,8 +432,7 @@ class _ProjectState extends State<Project> {
                                                     getAllProjects()
                                                 });
                                       },
-                                      icon: const Icon(
-                                          Icons.delete_forever_outlined),
+                                      icon: const Icon(Icons.delete),
                                     )
                                   ],
                                 ),

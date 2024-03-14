@@ -466,7 +466,7 @@ class _AddProjectState extends State<AddProject> {
             ),
           ),
           BottomBarItem(
-            icon: const Icon(Icons.home),
+            icon: const Icon(Icons.task),
             backgroundColor: Colors.black,
             title: const TextUtil(
               text: 'Projects',

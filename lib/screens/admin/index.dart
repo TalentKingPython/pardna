@@ -1,15 +1,14 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
+import 'package:pardna/screens/admin/awardedusers/index.dart';
+import 'package:pardna/screens/admin/setuserroles.dart';
+import 'package:pardna/screens/admin/tieroneusers.dart';
+import 'package:pardna/screens/admin/tiertwousers.dart';
 
 import 'package:pardna/screens/home.dart';
-import 'package:pardna/utils/network.dart';
+import 'package:pardna/screens/admin/adminusers.dart';
 import 'package:pardna/utils/text_utils.dart';
 import 'package:pardna/utils/headers.dart';
-import 'package:pardna/utils/globals.dart' as globals;
+import 'package:pardna/utils/globals.dart';
 
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
@@ -22,17 +21,6 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
-  List<dynamic> contacts = [];
-
-  @override
-  void initState() {
-    super.initState();
-    ProjectService.getAllUnaddedProjectMembers(globals.projectInfo['_id'])
-        .then((res) => setState(() {
-              contacts = jsonDecode(res.body)['data'];
-            }));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,149 +51,171 @@ class _AdminPageState extends State<AdminPage> {
                         weight: true,
                         height: 60,
                       ),
-                      Column(
-                        children: [
-                          Card(
-                            elevation: 0,
-                            color: Colors.white,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const TextUtil(
-                                    text: 'Super Admin',
-                                    color: Colors.black,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const AdminPage(),
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      size: 25,
-                                      Icons.arrow_forward,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ],
+                      Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const TextUtil(
+                                text: 'Set Users\' Roles',
+                                color: Colors.black,
                               ),
+                              GestureDetector(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SetUserRoles(),
+                                  ),
+                                ),
+                                child: const Icon(
+                                  size: 25,
+                                  Icons.arrow_forward,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (userInfo['roles'].contains('superadmin'))
+                        Card(
+                          elevation: 0,
+                          color: Colors.white,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const TextUtil(
+                                  text: 'Admin Users',
+                                  color: Colors.black,
+                                ),
+                                GestureDetector(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const AdminUsers(),
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    size: 25,
+                                    Icons.arrow_forward,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Card(
-                            elevation: 0,
-                            color: Colors.white,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const TextUtil(
-                                    text: 'Admin Users',
-                                    color: Colors.black,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const AdminPage(),
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      size: 25,
-                                      Icons.arrow_forward,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ],
+                        ),
+                      Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const TextUtil(
+                                text: 'Users (Tier2)',
+                                color: Colors.black,
                               ),
-                            ),
-                          ),
-                          Card(
-                            elevation: 0,
-                            color: Colors.white,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const TextUtil(
-                                    text: 'Users',
-                                    color: Colors.black,
+                              GestureDetector(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Tier2Users(),
                                   ),
-                                  GestureDetector(
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const AdminPage(),
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      size: 25,
-                                      Icons.arrow_forward,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ],
+                                ),
+                                child: const Icon(
+                                  size: 25,
+                                  Icons.arrow_forward,
+                                  color: Colors.green,
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                          Card(
-                            elevation: 0,
-                            color: Colors.white,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const TextUtil(
-                                    text: 'Awarded Users',
-                                    color: Colors.black,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const AdminPage(),
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      size: 25,
-                                      Icons.arrow_forward,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ],
+                        ),
+                      ),
+                      Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const TextUtil(
+                                text: 'Users (Tier1)',
+                                color: Colors.black,
                               ),
-                            ),
+                              GestureDetector(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Tier1Users(),
+                                  ),
+                                ),
+                                child: const Icon(
+                                  size: 25,
+                                  Icons.arrow_forward,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
+                      ),
+                      Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const TextUtil(
+                                text: 'Awarded Users',
+                                color: Colors.black,
+                              ),
+                              GestureDetector(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const AwardedUsers(),
+                                  ),
+                                ),
+                                child: const Icon(
+                                  size: 25,
+                                  Icons.arrow_forward,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       )
                     ],
                   ),
