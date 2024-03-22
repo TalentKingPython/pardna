@@ -129,16 +129,18 @@ class _LoginState extends State<Login> {
                                 bottom: BorderSide(color: Colors.green),
                               ),
                             ),
-                            child: TextFormField(
-                              controller: _emailController,
-                              style: const TextStyle(color: Colors.black),
-                              decoration: const InputDecoration(
-                                suffixIcon: Icon(
-                                  Icons.mail,
-                                  color: Colors.green,
+                            child: SingleChildScrollView(
+                              child: TextFormField(
+                                controller: _emailController,
+                                style: const TextStyle(color: Colors.black),
+                                decoration: const InputDecoration(
+                                  suffixIcon: Icon(
+                                    Icons.mail,
+                                    color: Colors.green,
+                                  ),
+                                  fillColor: Colors.green,
+                                  border: InputBorder.none,
                                 ),
-                                fillColor: Colors.green,
-                                border: InputBorder.none,
                               ),
                             ),
                           ),
@@ -155,26 +157,28 @@ class _LoginState extends State<Login> {
                                 bottom: BorderSide(color: Colors.green),
                               ),
                             ),
-                            child: TextFormField(
-                              controller: _passwordController,
-                              obscureText: showPassword,
-                              style: const TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showPassword = !showPassword;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    showPassword
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: Colors.green,
+                            child: SingleChildScrollView(
+                              child: TextFormField(
+                                controller: _passwordController,
+                                obscureText: showPassword,
+                                style: const TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        showPassword = !showPassword;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      showPassword
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      color: Colors.green,
+                                    ),
                                   ),
+                                  fillColor: Colors.green,
+                                  border: InputBorder.none,
                                 ),
-                                fillColor: Colors.green,
-                                border: InputBorder.none,
                               ),
                             ),
                           ),

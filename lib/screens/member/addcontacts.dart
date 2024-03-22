@@ -64,16 +64,18 @@ class _AddContactsState extends State<AddContacts> {
                       decoration: const BoxDecoration(
                           border: Border(
                               bottom: BorderSide(color: Colors.black38))),
-                      child: TextFormField(
-                        style: const TextStyle(color: Colors.black),
-                        decoration: const InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.close,
-                            color: Colors.black38,
+                      child: SingleChildScrollView(
+                        child: TextFormField(
+                          style: const TextStyle(color: Colors.black),
+                          decoration: const InputDecoration(
+                            suffixIcon: Icon(
+                              Icons.close,
+                              color: Colors.black38,
+                            ),
+                            hintStyle: TextStyle(fontSize: 16),
+                            hintText: 'Search users by name',
+                            border: InputBorder.none,
                           ),
-                          hintStyle: TextStyle(fontSize: 16),
-                          hintText: 'Search users by name',
-                          border: InputBorder.none,
                         ),
                       ),
                     ),

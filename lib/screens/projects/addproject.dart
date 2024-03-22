@@ -118,17 +118,19 @@ class _AddProjectState extends State<AddProject> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: TextFormField(
-                            controller: _nameController,
-                            style: const TextStyle(color: Colors.black),
-                            decoration: const InputDecoration(
-                              hintText: 'Enter name for new pardna...',
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w200,
+                          child: SingleChildScrollView(
+                            child: TextFormField(
+                              controller: _nameController,
+                              style: const TextStyle(color: Colors.black),
+                              decoration: const InputDecoration(
+                                hintText: 'Enter name for new pardna...',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w200,
+                                ),
+                                fillColor: Colors.black,
+                                border: InputBorder.none,
                               ),
-                              fillColor: Colors.black,
-                              border: InputBorder.none,
                             ),
                           ),
                         ),
@@ -149,26 +151,28 @@ class _AddProjectState extends State<AddProject> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: TextFormField(
-                              style: const TextStyle(color: Colors.black),
-                              decoration: const InputDecoration(
-                                hintText: 'Enter value of hand amount...',
-                                hintStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w200,
+                          child: SingleChildScrollView(
+                            child: TextFormField(
+                                style: const TextStyle(color: Colors.black),
+                                decoration: const InputDecoration(
+                                  hintText: 'Enter value of hand amount...',
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                  fillColor: Colors.black,
+                                  border: InputBorder.none,
                                 ),
-                                fillColor: Colors.black,
-                                border: InputBorder.none,
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  try {
-                                    handAmount = double.parse(value);
-                                  } catch (e) {
-                                    handAmount = 0;
-                                  }
-                                });
-                              }),
+                                onChanged: (value) {
+                                  setState(() {
+                                    try {
+                                      handAmount = double.parse(value);
+                                    } catch (e) {
+                                      handAmount = 0;
+                                    }
+                                  });
+                                }),
+                          ),
                         ),
                         const Align(
                           alignment: Alignment.centerLeft,
@@ -187,22 +191,24 @@ class _AddProjectState extends State<AddProject> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: TextFormField(
-                            initialValue: '0',
-                            style: const TextStyle(color: Colors.black),
-                            decoration: const InputDecoration(
-                              fillColor: Colors.black,
-                              border: InputBorder.none,
+                          child: SingleChildScrollView(
+                            child: TextFormField(
+                              initialValue: '0',
+                              style: const TextStyle(color: Colors.black),
+                              decoration: const InputDecoration(
+                                fillColor: Colors.black,
+                                border: InputBorder.none,
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  try {
+                                    numberOfMember = int.parse(value);
+                                  } catch (e) {
+                                    numberOfMember = 0;
+                                  }
+                                });
+                              },
                             ),
-                            onChanged: (value) {
-                              setState(() {
-                                try {
-                                  numberOfMember = int.parse(value);
-                                } catch (e) {
-                                  numberOfMember = 0;
-                                }
-                              });
-                            },
                           ),
                         ),
                         const Align(

@@ -164,18 +164,20 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                                       color: Colors.green),
                                                 ),
                                               ),
-                                              child: TextFormField(
-                                                controller: _nameController,
-                                                style: const TextStyle(
-                                                    color: Colors.black),
-                                                decoration:
-                                                    const InputDecoration(
-                                                  suffixIcon: Icon(
-                                                    Icons.person,
-                                                    color: Colors.green,
+                                              child: SingleChildScrollView(
+                                                child: TextFormField(
+                                                  controller: _nameController,
+                                                  style: const TextStyle(
+                                                      color: Colors.black),
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    suffixIcon: Icon(
+                                                      Icons.person,
+                                                      color: Colors.green,
+                                                    ),
+                                                    fillColor: Colors.green,
+                                                    border: InputBorder.none,
                                                   ),
-                                                  fillColor: Colors.green,
-                                                  border: InputBorder.none,
                                                 ),
                                               ),
                                             ),
@@ -376,18 +378,21 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                                     color: Colors.green),
                                               ),
                                             ),
-                                            child: TextFormField(
-                                              obscureText: true,
-                                              controller: _oldController,
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                suffixIcon: Icon(
-                                                  Icons.lock,
-                                                  color: Colors.green,
+                                            child: SingleChildScrollView(
+                                              child: TextFormField(
+                                                obscureText: true,
+                                                controller: _oldController,
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                                decoration:
+                                                    const InputDecoration(
+                                                  suffixIcon: Icon(
+                                                    Icons.lock,
+                                                    color: Colors.green,
+                                                  ),
+                                                  fillColor: Colors.green,
+                                                  border: InputBorder.none,
                                                 ),
-                                                fillColor: Colors.green,
-                                                border: InputBorder.none,
                                               ),
                                             ),
                                           ),
@@ -404,18 +409,21 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                                     color: Colors.green),
                                               ),
                                             ),
-                                            child: TextFormField(
-                                              obscureText: true,
-                                              controller: _passwordController,
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                suffixIcon: Icon(
-                                                  Icons.lock,
-                                                  color: Colors.green,
+                                            child: SingleChildScrollView(
+                                              child: TextFormField(
+                                                obscureText: true,
+                                                controller: _passwordController,
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                                decoration:
+                                                    const InputDecoration(
+                                                  suffixIcon: Icon(
+                                                    Icons.lock,
+                                                    color: Colors.green,
+                                                  ),
+                                                  fillColor: Colors.green,
+                                                  border: InputBorder.none,
                                                 ),
-                                                fillColor: Colors.green,
-                                                border: InputBorder.none,
                                               ),
                                             ),
                                           ),
@@ -432,18 +440,21 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                                     color: Colors.green),
                                               ),
                                             ),
-                                            child: TextFormField(
-                                              obscureText: true,
-                                              controller: _confirmController,
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                suffixIcon: Icon(
-                                                  Icons.lock,
-                                                  color: Colors.green,
+                                            child: SingleChildScrollView(
+                                              child: TextFormField(
+                                                obscureText: true,
+                                                controller: _confirmController,
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                                decoration:
+                                                    const InputDecoration(
+                                                  suffixIcon: Icon(
+                                                    Icons.lock,
+                                                    color: Colors.green,
+                                                  ),
+                                                  fillColor: Colors.green,
+                                                  border: InputBorder.none,
                                                 ),
-                                                fillColor: Colors.green,
-                                                border: InputBorder.none,
                                               ),
                                             ),
                                           ),
@@ -683,22 +694,26 @@ class _PhoneVerificationDialogState extends State<PhoneVerificationDialog> {
                   color: Colors.red,
                 ),
               ),
-            TextFormField(
-              controller: _phoneController,
-              readOnly: (verifyId != ''),
-              decoration: const InputDecoration(
-                labelStyle: TextStyle(color: Colors.green, fontSize: 15),
-                border: UnderlineInputBorder(),
-                labelText: 'Enter phone number',
-              ),
-            ),
-            if (verifyId != '')
-              TextFormField(
-                controller: _codeController,
+            SingleChildScrollView(
+              child: TextFormField(
+                controller: _phoneController,
+                readOnly: (verifyId != ''),
                 decoration: const InputDecoration(
                   labelStyle: TextStyle(color: Colors.green, fontSize: 15),
                   border: UnderlineInputBorder(),
-                  labelText: 'Enter verification code',
+                  labelText: 'Enter phone number',
+                ),
+              ),
+            ),
+            if (verifyId != '')
+              SingleChildScrollView(
+                child: TextFormField(
+                  controller: _codeController,
+                  decoration: const InputDecoration(
+                    labelStyle: TextStyle(color: Colors.green, fontSize: 15),
+                    border: UnderlineInputBorder(),
+                    labelText: 'Enter verification code',
+                  ),
                 ),
               ),
           ],
