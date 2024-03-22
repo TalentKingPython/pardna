@@ -23,6 +23,35 @@ class _LandingState extends State<Landing> {
     getProjectMembers();
   }
 
+  String durationMode(String? duration) {
+    final Map<String, String> durationMap = {
+      'Daily': 'days',
+      'Weekly': 'weeks',
+      'Monthly': 'months',
+      'Yearly': 'years',
+    };
+
+    return durationMap[duration ?? ''] ?? '-';
+  }
+
+  int getRunningPeriod(DateTime start, String? duration) {
+    final today = DateTime.now();
+    switch (duration) {
+      case 'Daily':
+        return today.difference(start).inDays;
+      case 'Weekly':
+        return today.difference(start).inDays ~/ 7;
+      case 'Monthly':
+        if (start.day > today.day) {
+          return today.month - start.month - 1;
+        } else {
+          return today.month - start.month;
+        }
+      default:
+        return 0;
+    }
+  }
+
   void getProjectMembers() {
     ProjectService.getAllProjects().then((res) => setState(() {
           projects = jsonDecode(res.body)['data'];
@@ -103,7 +132,7 @@ class _LandingState extends State<Landing> {
                                     ),
                                     TextUtil(
                                       text:
-                                          "0 / ${projects[index]['number']} Weeks",
+                                          "${getRunningPeriod(DateTime.parse(projects[index]['start']), projects[index]['duration'])} / ${projects[index]['number']} ${durationMode(projects[index]['duration'])}",
                                       color: Colors.green,
                                       size: 12,
                                     )

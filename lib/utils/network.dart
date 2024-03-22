@@ -50,6 +50,63 @@ class AuthService {
     );
     return response;
   }
+
+  static Future<http.Response> updateProfile(
+      String? name, String? phone, String? password, String? oldpass) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.put(
+      Uri.parse('$baseURL/auth/profile'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+      body: jsonEncode(<String, String?>{
+        'name': name,
+        'phone': phone,
+        'password': password,
+        'oldpass': oldpass,
+      }),
+    );
+    return response;
+  }
+
+  static Future<http.Response> sendVerificationCode(String phone) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.post(
+      Uri.parse('$baseURL/auth/phone-verify'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+      body: jsonEncode(<String, String?>{
+        'phone': phone,
+      }),
+    );
+    return response;
+  }
+
+  static Future<http.Response> checkVerificationCode(
+      String id, String token) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.post(
+      Uri.parse('$baseURL/auth/check-phone'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+      body: jsonEncode(<String, String?>{
+        'id': id,
+        'token': token,
+      }),
+    );
+    return response;
+  }
 }
 
 class UserService {
@@ -72,6 +129,20 @@ class UserService {
     final authToken = globals.authToken;
 
     final response = await http.get(
+      Uri.parse('$baseURL/user'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
+  static Future<http.Response> deleteUser() async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.delete(
       Uri.parse('$baseURL/user'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -293,6 +364,38 @@ class ProjectService {
         'memberId': memberId,
         'status': status,
       }),
+    );
+
+    return response;
+  }
+}
+
+class NotificationService {
+  static Future<http.Response> getAllNotificationsByUserId() async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.get(
+      Uri.parse('$baseURL/notification'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+
+    return response;
+  }
+
+  static Future<http.Response> checkNotificationById(notificationId) async {
+    final baseURL = globals.baseURL;
+    final authToken = globals.authToken;
+
+    final response = await http.put(
+      Uri.parse('$baseURL/notification/$notificationId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
     );
 
     return response;

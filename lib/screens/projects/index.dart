@@ -66,6 +66,24 @@ class _ProjectState extends State<Project> {
     return total.toStringAsFixed(2);
   }
 
+  int getRunningPeriod(DateTime start, String? duration) {
+    final today = DateTime.now();
+    switch (duration) {
+      case 'Daily':
+        return today.difference(start).inDays;
+      case 'Weekly':
+        return today.difference(start).inDays ~/ 7;
+      case 'Monthly':
+        if (start.day > today.day) {
+          return today.month - start.month - 1;
+        } else {
+          return today.month - start.month;
+        }
+      default:
+        return 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -217,7 +235,7 @@ class _ProjectState extends State<Project> {
                                     ),
                                     TextUtil(
                                       text:
-                                          '0 / ${projects[i]['number']} ${durationMode(projects[i]['duration'])}',
+                                          '${getRunningPeriod(DateTime.parse(projects[i]['start']), projects[i]['duration'])} / ${projects[i]['number']} ${durationMode(projects[i]['duration'])}',
                                       color: Colors.green,
                                       size: 12,
                                     ),

@@ -119,6 +119,20 @@ class _AddMemberState extends State<AddMember> {
                                         ],
                                       ),
                                       const Spacer(),
+                                      if (contacts[i]['status'] == 'deleted')
+                                        Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: Colors.deepOrange[300],
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: const TextUtil(
+                                            text: 'Deleted User',
+                                            color: Colors.black,
+                                            size: 10,
+                                          ),
+                                        ),
                                       TextButton(
                                         child: Container(
                                           width: 40,

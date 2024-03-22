@@ -254,38 +254,38 @@ class _ProjectDetailState extends State<ProjectDetail> {
                                 const SizedBox(height: 8),
                                 const Divider(height: 5),
                                 const SizedBox(height: 8),
-                                const Row(
-                                  children: [
-                                    TextUtil(
-                                      text: 'Total paid: ',
-                                      size: 15,
-                                      weight: true,
-                                      color: Colors.black,
-                                    ),
-                                    TextUtil(
-                                      text: '\$0',
-                                      size: 15,
-                                      weight: true,
-                                      color: Colors.green,
-                                    ),
-                                  ],
-                                ),
-                                const Row(
-                                  children: [
-                                    TextUtil(
-                                      text: 'Total due: ',
-                                      size: 15,
-                                      weight: true,
-                                      color: Colors.black,
-                                    ),
-                                    TextUtil(
-                                      text: '\$0',
-                                      size: 15,
-                                      weight: true,
-                                      color: Colors.red,
-                                    ),
-                                  ],
-                                ),
+                                // const Row(
+                                //   children: [
+                                //     TextUtil(
+                                //       text: 'Total paid: ',
+                                //       size: 15,
+                                //       weight: true,
+                                //       color: Colors.black,
+                                //     ),
+                                //     TextUtil(
+                                //       text: '\$0',
+                                //       size: 15,
+                                //       weight: true,
+                                //       color: Colors.green,
+                                //     ),
+                                //   ],
+                                // ),
+                                // const Row(
+                                //   children: [
+                                //     TextUtil(
+                                //       text: 'Total due: ',
+                                //       size: 15,
+                                //       weight: true,
+                                //       color: Colors.black,
+                                //     ),
+                                //     TextUtil(
+                                //       text: '\$0',
+                                //       size: 15,
+                                //       weight: true,
+                                //       color: Colors.red,
+                                //     ),
+                                //   ],
+                                // ),
                                 Row(
                                   children: [
                                     const TextUtil(

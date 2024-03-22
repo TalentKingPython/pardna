@@ -29,10 +29,10 @@ class _StripeServiceState extends State<StripeService> {
         currentStep: step,
         steps: [
           Step(
-            title: const Text('Init payment'),
+            title: const Text('Initial payment'),
             content: LoadingButton(
               onPressed: initPaymentSheet,
-              text: 'Init payment sheet',
+              text: 'Initial payment sheet',
             ),
           ),
           Step(

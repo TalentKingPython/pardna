@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pardna/screens/admin/index.dart';
 
 import 'package:pardna/screens/landing.dart';
 import 'package:pardna/screens/login.dart';
 import 'package:pardna/screens/member/index.dart';
+import 'package:pardna/screens/notification.dart';
+import 'package:pardna/screens/profile/index.dart';
 import 'package:pardna/screens/projects/index.dart';
 import 'package:pardna/screens/stripe/index.dart';
 import 'package:pardna/utils/text_utils.dart';
@@ -186,21 +189,31 @@ class _HomePageState extends State<HomePage> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              const SizedBox(
+              SizedBox(
                 height: 250,
                 child: Column(children: [
-                  DrawerHeader(
+                  const DrawerHeader(
                     child: CircleAvatar(
                       radius: 70, // Image radius
                       backgroundImage: NetworkImage(
                           'https://app.idonethis.com/api/users/download-avatar/user/124382'),
                     ),
                   ),
-                  TextUtil(
-                    text: 'Banker',
-                    size: 30,
-                    weight: false,
-                    color: Colors.black,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileDetail(),
+                        ),
+                      );
+                    },
+                    child: TextUtil(
+                      text: userInfo['name'],
+                      size: 28,
+                      weight: false,
+                      color: Colors.black,
+                    ),
                   )
                 ]),
               ),
@@ -236,6 +249,21 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   _onItemTapped(2);
                   Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const TextUtil(
+                  text: 'Notifications',
+                  size: 24,
+                  color: Colors.black,
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationPardna(),
+                    ),
+                  );
                 },
               ),
               ListTile(

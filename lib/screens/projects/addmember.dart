@@ -20,14 +20,14 @@ class AddMember extends StatefulWidget {
 }
 
 class _AddMemberState extends State<AddMember> {
-  List<dynamic> contacts = [];
+  List<dynamic> members = [];
 
   @override
   void initState() {
     super.initState();
     ProjectService.getAllUnaddedProjectMembers(globals.projectInfo['_id'])
         .then((res) => setState(() {
-              contacts = jsonDecode(res.body)['data'];
+              members = jsonDecode(res.body)['data'];
             }));
   }
 
@@ -78,7 +78,7 @@ class _AddMemberState extends State<AddMember> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              for (int i = 0; i < contacts.length; i++)
+                              for (int i = 0; i < members.length; i++)
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 8),
@@ -101,18 +101,18 @@ class _AddMemberState extends State<AddMember> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           TextUtil(
-                                            text: contacts[i]['name'],
+                                            text: members[i]['name'],
                                             size: 13,
                                             weight: true,
                                             color: Colors.black,
                                           ),
                                           TextUtil(
-                                            text: contacts[i]['email'],
+                                            text: members[i]['email'],
                                             size: 12,
                                             color: Colors.black87,
                                           ),
                                           TextUtil(
-                                            text: contacts[i]['phone'] ??
+                                            text: members[i]['phone'] ??
                                                 'No phone number',
                                             size: 12,
                                             color: Colors.black87,
@@ -120,6 +120,20 @@ class _AddMemberState extends State<AddMember> {
                                         ],
                                       ),
                                       const Spacer(),
+                                      if (members[i]['status'] == 'deleted')
+                                        Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: Colors.deepOrange[300],
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: const TextUtil(
+                                            text: 'Deleted User',
+                                            color: Colors.black,
+                                            size: 10,
+                                          ),
+                                        ),
                                       TextButton(
                                         child: Container(
                                           width: 40,
@@ -136,16 +150,16 @@ class _AddMemberState extends State<AddMember> {
                                         onPressed: () async {
                                           final response = await ProjectService
                                               .addProjectMember(
-                                                  contacts[i]['_id'],
+                                                  members[i]['_id'],
                                                   globals.projectInfo['_id'],
                                                   'inviting');
                                           if (!context.mounted) return;
                                           if (response.statusCode == 200) {
                                             setState(() {
-                                              contacts = contacts
+                                              members = members
                                                   .where((element) =>
                                                       element['_id'] !=
-                                                      contacts[i]['_id'])
+                                                      members[i]['_id'])
                                                   .toList();
                                             });
                                           }

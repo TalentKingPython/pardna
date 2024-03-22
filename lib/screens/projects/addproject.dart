@@ -312,7 +312,7 @@ class _AddProjectState extends State<AddProject> {
                               });
                             },
                             hint: const Text(
-                              'Choose one of choises...',
+                              'Choose one of the options...',
                               style: TextStyle(fontWeight: FontWeight.w200),
                             ),
                             items: <String>[
