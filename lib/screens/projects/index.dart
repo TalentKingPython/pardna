@@ -186,7 +186,7 @@ class _ProjectState extends State<Project> {
               child: SingleChildScrollView(
                   child: Column(
                 children: [
-                  for (int i = 0; i < projects.length; i++)
+                  for (int index = 0; index < projects.length; index++)
                     Column(
                       children: [
                         Card(
@@ -207,17 +207,18 @@ class _ProjectState extends State<Project> {
                                     Row(
                                       children: [
                                         TextUtil(
-                                          text: projects[i]['name'],
+                                          text: projects[index]['name'],
                                           color: Colors.black,
                                           weight: true,
                                           size: 15,
                                         ),
                                         const SizedBox(width: 5),
-                                        if ((projects[i]['paid_members']
+                                        if ((projects[index]['paid_members']
                                                     as Map<String, dynamic>?)
                                                 ?.keys
                                                 .where((key) =>
-                                                    (projects[i]['paid_members']
+                                                    (projects[index]
+                                                            ['paid_members']
                                                         as Map<String,
                                                             dynamic>?)?[key] ==
                                                     'awarded')
@@ -233,12 +234,41 @@ class _ProjectState extends State<Project> {
                                           ),
                                       ],
                                     ),
-                                    TextUtil(
-                                      text:
-                                          '${getRunningPeriod(DateTime.parse(projects[i]['start']), projects[i]['duration'])} / ${projects[i]['number']} ${durationMode(projects[i]['duration'])}',
-                                      color: Colors.green,
-                                      size: 12,
-                                    ),
+                                    if (projects[index]['status'] == 'running')
+                                      TextUtil(
+                                        text:
+                                            '${getRunningPeriod(DateTime.parse(projects[index]['start']), projects[index]['duration'])} / ${projects[index]['number']} ${durationMode(projects[index]['duration'])}',
+                                        color: Colors.green,
+                                        size: 12,
+                                      )
+                                    else if (projects[index]['status'] ==
+                                        'finished')
+                                      const TextUtil(
+                                        text: 'Finished',
+                                        color: Colors.cyan,
+                                        size: 12,
+                                      )
+                                    else if (projects[index]['status'] ==
+                                        'canceled')
+                                      const TextUtil(
+                                        text: 'Canceled',
+                                        color: Colors.red,
+                                        size: 12,
+                                      )
+                                    else if (projects[index]['status'] ==
+                                        'preparing')
+                                      const TextUtil(
+                                        text: 'Preparing',
+                                        color: Colors.orange,
+                                        size: 12,
+                                      )
+                                    else
+                                      TextUtil(
+                                        text:
+                                            '${getRunningPeriod(DateTime.parse(projects[index]['start']), projects[index]['duration'])} / ${projects[index]['number']} ${durationMode(projects[index]['duration'])}',
+                                        color: Colors.green,
+                                        size: 12,
+                                      )
                                   ],
                                 )
                               ],
@@ -265,7 +295,7 @@ class _ProjectState extends State<Project> {
                                         TextUtil(
                                           text: DateFormat('yyyy.MM.dd').format(
                                               DateTime.parse(
-                                                  projects[i]['start'])),
+                                                  projects[index]['start'])),
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
@@ -279,9 +309,9 @@ class _ProjectState extends State<Project> {
                                           text: DateFormat('yyyy.MM.dd').format(
                                               getEndDate(
                                                   DateTime.parse(
-                                                      projects[i]['start']),
-                                                  projects[i]['duration'],
-                                                  projects[i]['number'])),
+                                                      projects[index]['start']),
+                                                  projects[index]['duration'],
+                                                  projects[index]['number'])),
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
@@ -301,7 +331,7 @@ class _ProjectState extends State<Project> {
                                           color: Colors.black,
                                         ),
                                         TextUtil(
-                                          text: projects[i]['number'],
+                                          text: projects[index]['number'],
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
@@ -325,7 +355,8 @@ class _ProjectState extends State<Project> {
                                         ),
                                         const SizedBox(width: 5),
                                         TextUtil(
-                                          text: '\$${projects[i]['amount']}',
+                                          text:
+                                              '\$${projects[index]['amount']}',
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
@@ -336,7 +367,7 @@ class _ProjectState extends State<Project> {
                                           color: Colors.black,
                                         ),
                                         TextUtil(
-                                          text: projects[i]['duration'],
+                                          text: projects[index]['duration'],
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
@@ -358,7 +389,7 @@ class _ProjectState extends State<Project> {
                                         ),
                                         TextUtil(
                                           text:
-                                              '\$${getTotal(projects[i]['amount'], projects[i]['number'])}',
+                                              '\$${getTotal(projects[index]['amount'], projects[index]['number'])}',
                                           weight: true,
                                           size: 14,
                                           color: Colors.green,
@@ -382,7 +413,7 @@ class _ProjectState extends State<Project> {
                                         if (userInfo['payment_method'] ==
                                             "verified") {
                                           setState(() {
-                                            projectInfo = projects[i];
+                                            projectInfo = projects[index];
                                           });
                                           Navigator.push(
                                             context,
@@ -444,7 +475,7 @@ class _ProjectState extends State<Project> {
                                       color: Colors.red[700],
                                       onPressed: () {
                                         ProjectService.deleteProject(
-                                                projects[i]['_id'])
+                                                projects[index]['_id'])
                                             .then((res) => {
                                                   if (res.statusCode == 200)
                                                     getAllProjects()

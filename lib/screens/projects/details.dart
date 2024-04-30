@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -137,6 +138,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Divider(height: 5),
                                 const SizedBox(height: 8),
@@ -232,7 +234,6 @@ class _ProjectDetailState extends State<ProjectDetail> {
                                 ),
                                 const SizedBox(height: 8),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const Icon(Icons.web_stories_outlined,
                                         color: Colors.green, size: 15),

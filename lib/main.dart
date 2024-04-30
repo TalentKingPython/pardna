@@ -3,6 +3,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:pardna/.env.dart';
 import 'package:flutter/services.dart';
 import 'package:pardna/screens/login.dart';
+// import 'package:device_preview/device_preview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,12 +19,22 @@ void main() async {
   });
 }
 
+// void main() => runApp(
+//       DevicePreview(
+//         enabled: true,
+//         builder: (context) => MyApp(), // Wrap your app
+//       ),
+//     );
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // useInheritedMediaQuery: true,
+      // locale: DevicePreview.locale(context),
+      // builder: DevicePreview.appBuilder,
       theme: exampleAppTheme,
       debugShowCheckedModeBanner: false,
       home: const Login(),

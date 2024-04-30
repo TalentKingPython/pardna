@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:clipboard/clipboard.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pardna/screens/home.dart';
 import 'package:pardna/utils/network.dart';
@@ -28,6 +30,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
   String error = '';
   String success = '';
   dynamic paymentMethod = {};
+  bool onboardingStatus = false;
 
   @override
   void initState() {
@@ -37,11 +40,38 @@ class _ProfileDetailState extends State<ProfileDetail> {
             paymentMethod = jsonDecode(res.body);
           })
         });
+    checkOnboardingVerification().then((res) => {
+          setState(() {
+            onboardingStatus = jsonDecode(res.body);
+          })
+        });
   }
 
   Future<http.Response> getPaymentMethodByCustomerId() async {
     final response = await http.get(
       Uri.parse('$baseURL/stripe/${userInfo['stripe_customer_token']}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
+  Future<http.Response> getOnboardingLink() async {
+    final response = await http.post(
+      Uri.parse('$baseURL/stripe/connect-account'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-access-token': authToken,
+      },
+    );
+    return response;
+  }
+
+  Future<http.Response> checkOnboardingVerification() async {
+    final response = await http.post(
+      Uri.parse('$baseURL/stripe/check-onboarding'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'x-access-token': authToken,
@@ -68,495 +98,629 @@ class _ProfileDetailState extends State<ProfileDetail> {
                   Navigator.pop(context);
                 },
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    const CircleAvatar(
-                      radius: 70, // Image radius
-                      backgroundImage: NetworkImage(
-                          'https://app.idonethis.com/api/users/download-avatar/user/124382'),
-                    ),
-                    const SizedBox(height: 10),
-                    TextUtil(
-                      text: userInfo['name'],
-                      size: 25,
-                      color: Colors.black,
-                      weight: true,
-                    ),
-                    const SizedBox(height: 30),
-                    if (error != '')
-                      Card(
-                        color: Colors.red[100],
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 15),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        const CircleAvatar(
+                          radius: 70, // Image radius
+                          backgroundImage: NetworkImage(
+                              'https://app.idonethis.com/api/users/download-avatar/user/124382'),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: TextUtil(
-                            text: error,
-                            color: Colors.red,
+                        const SizedBox(height: 10),
+                        TextUtil(
+                          text: userInfo['name'],
+                          size: 25,
+                          color: Colors.black,
+                          weight: true,
+                        ),
+                        const SizedBox(height: 30),
+                        if (error != '')
+                          Card(
+                            color: Colors.red[100],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextUtil(
+                                text: error,
+                                color: Colors.red,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    if (success != '')
-                      Card(
-                        color: Colors.green[100],
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: TextUtil(
-                            text: success,
-                            color: Colors.green,
+                        if (success != '')
+                          Card(
+                            color: Colors.green[100],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextUtil(
+                                text: success,
+                                color: Colors.green,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    Card(
-                      elevation: 0,
-                      color: Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 20),
-                        child: Column(
-                          children: [
-                            Row(
+                        Card(
+                          elevation: 0,
+                          color: Colors.white,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 20),
+                            child: Column(
                               children: [
-                                const Icon(
-                                  Icons.person_outline,
-                                  color: Colors.green,
-                                  size: 35,
-                                ),
-                                const SizedBox(width: 20),
-                                TextUtil(
-                                  text: userInfo['name'],
-                                  size: 20,
-                                  color: Colors.black45,
-                                ),
-                                const Spacer(),
-                                GestureDetector(
-                                  onTap: () => showDialog<String>(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
-                                      title: const Text('Edit your name'),
-                                      content: SingleChildScrollView(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const TextUtil(
-                                              text: "Name",
-                                              size: 10,
-                                              color: Colors.green,
-                                            ),
-                                            Container(
-                                              height: 35,
-                                              decoration: const BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                      color: Colors.green),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.person_outline,
+                                      color: Colors.green,
+                                      size: 35,
+                                    ),
+                                    const SizedBox(width: 20),
+                                    TextUtil(
+                                      text: userInfo['name'],
+                                      size: 20,
+                                      color: Colors.black45,
+                                    ),
+                                    const Spacer(),
+                                    GestureDetector(
+                                      onTap: () => showDialog<String>(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                          title: const Text('Edit your name'),
+                                          content: SingleChildScrollView(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const TextUtil(
+                                                  text: "Name",
+                                                  size: 10,
+                                                  color: Colors.green,
                                                 ),
-                                              ),
-                                              child: SingleChildScrollView(
-                                                child: TextFormField(
-                                                  controller: _nameController,
-                                                  style: const TextStyle(
-                                                      color: Colors.black),
+                                                Container(
+                                                  height: 35,
                                                   decoration:
-                                                      const InputDecoration(
-                                                    suffixIcon: Icon(
-                                                      Icons.person,
-                                                      color: Colors.green,
+                                                      const BoxDecoration(
+                                                    border: Border(
+                                                      bottom: BorderSide(
+                                                          color: Colors.green),
                                                     ),
-                                                    fillColor: Colors.green,
-                                                    border: InputBorder.none,
+                                                  ),
+                                                  child: SingleChildScrollView(
+                                                    child: TextFormField(
+                                                      controller:
+                                                          _nameController,
+                                                      style: const TextStyle(
+                                                          color: Colors.black),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        suffixIcon: Icon(
+                                                          Icons.person,
+                                                          color: Colors.green,
+                                                        ),
+                                                        fillColor: Colors.green,
+                                                        border:
+                                                            InputBorder.none,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  context, 'Cancel'),
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                if (_nameController.text ==
+                                                    '') {
+                                                  setState(() {
+                                                    error =
+                                                        'Please enter your name';
+                                                  });
+                                                  Future.delayed(
+                                                      const Duration(
+                                                          seconds: 2), () {
+                                                    setState(() {
+                                                      error = '';
+                                                    });
+                                                  });
+                                                  Navigator.pop(
+                                                      context, 'Cancel');
+                                                  return;
+                                                }
+                                                final response =
+                                                    await AuthService
+                                                        .updateProfile(
+                                                            _nameController
+                                                                .text,
+                                                            null,
+                                                            null,
+                                                            null);
+                                                if (!context.mounted) return;
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  setState(() {
+                                                    userInfo = jsonDecode(
+                                                        response.body);
+                                                  });
+                                                  Navigator.pop(context, 'OK');
+                                                } else {
+                                                  setState(() {
+                                                    error = jsonDecode(response
+                                                        .body)['message'];
+                                                  });
+                                                  Future.delayed(
+                                                      const Duration(
+                                                          seconds: 2), () {
+                                                    setState(() {
+                                                      error = '';
+                                                    });
+                                                  });
+                                                  Navigator.pop(
+                                                      context, 'Cancel');
+                                                  return;
+                                                }
+                                              },
+                                              child: const Text('OK'),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Cancel'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            if (_nameController.text == '') {
-                                              setState(() {
-                                                error =
-                                                    'Please enter your name';
-                                              });
-                                              Future.delayed(
-                                                  const Duration(seconds: 2),
-                                                  () {
-                                                setState(() {
-                                                  error = '';
-                                                });
-                                              });
-                                              Navigator.pop(context, 'Cancel');
-                                              return;
-                                            }
-                                            final response =
-                                                await AuthService.updateProfile(
-                                                    _nameController.text,
-                                                    null,
-                                                    null,
-                                                    null);
-                                            if (!context.mounted) return;
-                                            if (response.statusCode == 200) {
-                                              setState(() {
-                                                userInfo =
-                                                    jsonDecode(response.body);
-                                              });
-                                              Navigator.pop(context, 'OK');
-                                            } else {
-                                              setState(() {
-                                                error = jsonDecode(
-                                                    response.body)['message'];
-                                              });
-                                              Future.delayed(
-                                                  const Duration(seconds: 2),
-                                                  () {
-                                                setState(() {
-                                                  error = '';
-                                                });
-                                              });
-                                              Navigator.pop(context, 'Cancel');
-                                              return;
-                                            }
-                                          },
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  child: const TextUtil(
-                                    text: 'Edit',
-                                    color: Colors.green,
-                                  ),
-                                )
-                              ],
-                            ),
-                            const Divider(),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.email_outlined,
-                                  color: Colors.green,
-                                  size: 35,
+                                      child: const TextUtil(
+                                        text: 'Edit',
+                                        color: Colors.green,
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                const SizedBox(width: 20),
-                                TextUtil(
-                                  text: userInfo['email'],
-                                  size: 20,
-                                  color: Colors.black45,
-                                ),
-                                const Spacer(),
-                                GestureDetector(
-                                  onTap: () => showDialog<String>(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
-                                      title: const Text('Email Verification'),
-                                      content: const Text(
-                                          'Email Verification is not working yet!'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, 'Cancel'),
-                                          child: const Text('Cancel'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, 'OK'),
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  child: const TextUtil(
-                                    text: 'Verify',
-                                    color: Colors.green,
-                                  ),
-                                )
-                              ],
-                            ),
-                            const Divider(),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.phone_outlined,
-                                  color: Colors.green,
-                                  size: 35,
-                                ),
-                                const SizedBox(width: 20),
-                                TextUtil(
-                                  text: userInfo['phone'] ?? 'No phone number',
-                                  size: 20,
-                                  color: Colors.black45,
-                                ),
-                                const Spacer(),
-                                if (userInfo['verification']?.contains('phone'))
-                                  const TextUtil(
-                                    text: 'Verified',
-                                    color: Colors.green,
-                                  )
-                                else
-                                  GestureDetector(
-                                    onTap: () => showDialog<String>(
-                                        context: context,
-                                        builder: (_) =>
-                                            const PhoneVerificationDialog()),
-                                    child: const TextUtil(
-                                      text: 'Verify',
+                                const Divider(),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.email_outlined,
                                       color: Colors.green,
+                                      size: 35,
                                     ),
-                                  ),
-                              ],
-                            ),
-                            const Divider(),
-                            if (paymentMethod['card'] != null)
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.credit_card,
-                                    color: Colors.green,
-                                    size: 35,
-                                  ),
-                                  const SizedBox(width: 20),
-                                  TextUtil(
-                                    text:
-                                        '**** **** **** ${paymentMethod['card']['last4']}',
-                                    size: 15,
-                                    color: Colors.black45,
-                                  ),
-                                  const Spacer(),
-                                  TextUtil(
-                                    text:
-                                        '${paymentMethod['card']['exp_month']}/${paymentMethod['card']['exp_year']}',
-                                    size: 15,
-                                    color: Colors.black45,
-                                  ),
-                                ],
-                              ),
-                            if (paymentMethod['card'] != null) const Divider(),
-                            const SizedBox(height: 10),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: GestureDetector(
-                                onTap: () => showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                    title: const Text('Edit your name'),
-                                    content: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const TextUtil(
-                                            text: "Old Password",
-                                            size: 10,
-                                            color: Colors.green,
-                                          ),
-                                          Container(
-                                            height: 35,
-                                            decoration: const BoxDecoration(
-                                              border: Border(
-                                                bottom: BorderSide(
-                                                    color: Colors.green),
-                                              ),
+                                    const SizedBox(width: 20),
+                                    TextUtil(
+                                      text: userInfo['email'],
+                                      size: 20,
+                                      color: Colors.black45,
+                                    ),
+                                    const Spacer(),
+                                    GestureDetector(
+                                      onTap: () => showDialog<String>(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                          title:
+                                              const Text('Email Verification'),
+                                          content: const Text(
+                                              'Email Verification is not working yet!'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  context, 'Cancel'),
+                                              child: const Text('Cancel'),
                                             ),
-                                            child: SingleChildScrollView(
-                                              child: TextFormField(
-                                                obscureText: true,
-                                                controller: _oldController,
-                                                style: const TextStyle(
-                                                    color: Colors.black),
-                                                decoration:
-                                                    const InputDecoration(
-                                                  suffixIcon: Icon(
-                                                    Icons.lock,
-                                                    color: Colors.green,
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, 'OK'),
+                                              child: const Text('OK'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      child: const TextUtil(
+                                        text: 'Verify',
+                                        color: Colors.green,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const Divider(),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.phone_outlined,
+                                      color: Colors.green,
+                                      size: 35,
+                                    ),
+                                    const SizedBox(width: 20),
+                                    TextUtil(
+                                      text: userInfo['phone'] ??
+                                          'No phone number',
+                                      size: 20,
+                                      color: Colors.black45,
+                                    ),
+                                    const Spacer(),
+                                    if (userInfo['verification']
+                                        ?.contains('phone'))
+                                      const TextUtil(
+                                        text: 'Verified',
+                                        color: Colors.green,
+                                      )
+                                    else
+                                      GestureDetector(
+                                        onTap: () => showDialog<String>(
+                                            context: context,
+                                            builder: (_) =>
+                                                const PhoneVerificationDialog()),
+                                        child: const TextUtil(
+                                          text: 'Verify',
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                const Divider(),
+                                if (paymentMethod['card'] != null)
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.credit_card,
+                                        color: Colors.green,
+                                        size: 35,
+                                      ),
+                                      const SizedBox(width: 20),
+                                      TextUtil(
+                                        text:
+                                            '**** **** **** ${paymentMethod['card']['last4']}',
+                                        size: 15,
+                                        color: Colors.black45,
+                                      ),
+                                      const Spacer(),
+                                      TextUtil(
+                                        text:
+                                            '${paymentMethod['card']['exp_month']}/${paymentMethod['card']['exp_year']}',
+                                        size: 15,
+                                        color: Colors.black45,
+                                      ),
+                                    ],
+                                  ),
+                                if (paymentMethod['card'] != null)
+                                  const Divider(),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.credit_card,
+                                      color: Colors.green,
+                                      size: 35,
+                                    ),
+                                    const SizedBox(width: 20),
+                                    const TextUtil(
+                                      text: 'Onboarding verification',
+                                      size: 15,
+                                      color: Colors.black45,
+                                    ),
+                                    const Spacer(),
+                                    if (onboardingStatus == false)
+                                      GestureDetector(
+                                        onTap: () async {
+                                          final response =
+                                              await getOnboardingLink();
+                                          if (!context.mounted) return;
+                                          if (response.statusCode == 200) {
+                                            final linkURL = jsonDecode(
+                                                response.body)['url'];
+                                            showDialog<String>(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                title: const Text(
+                                                    'Onboarding Verification'),
+                                                content: SingleChildScrollView(
+                                                  child: Column(
+                                                    children: [
+                                                      const Text(
+                                                          'You have to verify your infomation'),
+                                                      TextFormField(
+                                                        initialValue: linkURL,
+                                                        readOnly: true,
+                                                        style: const TextStyle(
+                                                            color:
+                                                                Colors.black),
+                                                        decoration:
+                                                            InputDecoration(
+                                                          suffixIcon:
+                                                              IconButton(
+                                                            onPressed: () {
+                                                              FlutterClipboard
+                                                                      .copy(
+                                                                          linkURL)
+                                                                  .then((value) =>
+                                                                      print(
+                                                                          'copied'));
+                                                            },
+                                                            icon: const Icon(
+                                                              Icons
+                                                                  .content_copy,
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                          ),
+                                                          border:
+                                                              const OutlineInputBorder(),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  fillColor: Colors.green,
-                                                  border: InputBorder.none,
+                                                ),
+                                                actions: <Widget>[
+                                                  // TextButton(
+                                                  //   onPressed: () =>
+                                                  //       Navigator.pop(
+                                                  //           context, 'Cancel'),
+                                                  //   child: const Text('Cancel'),
+                                                  // ),
+                                                  TextButton(
+                                                    onPressed: () async {
+                                                      // Navigator.pop(context);
+                                                      await canLaunchUrl(
+                                                              Uri.parse(
+                                                                  linkURL))
+                                                          ? await launchUrl(
+                                                              Uri.parse(
+                                                                  linkURL))
+                                                          : throw 'Could not launch URL';
+                                                    },
+                                                    child: const Text(
+                                                        'Go to this link'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: const TextUtil(
+                                          text: 'Verify',
+                                          color: Colors.green,
+                                        ),
+                                      )
+                                    else
+                                      const TextUtil(
+                                        text: 'Verified',
+                                        color: Colors.green,
+                                      ),
+                                  ],
+                                ),
+                                if (onboardingStatus == false) const Divider(),
+                                const SizedBox(height: 10),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: GestureDetector(
+                                    onTap: () => showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        title: const Text('Edit your name'),
+                                        content: SingleChildScrollView(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const TextUtil(
+                                                text: "Old Password",
+                                                size: 10,
+                                                color: Colors.green,
+                                              ),
+                                              Container(
+                                                height: 35,
+                                                decoration: const BoxDecoration(
+                                                  border: Border(
+                                                    bottom: BorderSide(
+                                                        color: Colors.green),
+                                                  ),
+                                                ),
+                                                child: SingleChildScrollView(
+                                                  child: TextFormField(
+                                                    obscureText: true,
+                                                    controller: _oldController,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      suffixIcon: Icon(
+                                                        Icons.lock,
+                                                        color: Colors.green,
+                                                      ),
+                                                      fillColor: Colors.green,
+                                                      border: InputBorder.none,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          const TextUtil(
-                                            text: "New Password",
-                                            size: 10,
-                                            color: Colors.green,
-                                          ),
-                                          Container(
-                                            height: 35,
-                                            decoration: const BoxDecoration(
-                                              border: Border(
-                                                bottom: BorderSide(
-                                                    color: Colors.green),
+                                              const TextUtil(
+                                                text: "New Password",
+                                                size: 10,
+                                                color: Colors.green,
                                               ),
-                                            ),
-                                            child: SingleChildScrollView(
-                                              child: TextFormField(
-                                                obscureText: true,
-                                                controller: _passwordController,
-                                                style: const TextStyle(
-                                                    color: Colors.black),
-                                                decoration:
-                                                    const InputDecoration(
-                                                  suffixIcon: Icon(
-                                                    Icons.lock,
-                                                    color: Colors.green,
+                                              Container(
+                                                height: 35,
+                                                decoration: const BoxDecoration(
+                                                  border: Border(
+                                                    bottom: BorderSide(
+                                                        color: Colors.green),
                                                   ),
-                                                  fillColor: Colors.green,
-                                                  border: InputBorder.none,
+                                                ),
+                                                child: SingleChildScrollView(
+                                                  child: TextFormField(
+                                                    obscureText: true,
+                                                    controller:
+                                                        _passwordController,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                    decoration: InputDecoration(
+                                                      suffixIcon: IconButton(
+                                                        onPressed: () {},
+                                                        icon: const Icon(
+                                                          Icons.lock,
+                                                          color: Colors.green,
+                                                        ),
+                                                      ),
+                                                      border: InputBorder.none,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          const TextUtil(
-                                            text: "Confirm New Password",
-                                            size: 10,
-                                            color: Colors.green,
-                                          ),
-                                          Container(
-                                            height: 35,
-                                            decoration: const BoxDecoration(
-                                              border: Border(
-                                                bottom: BorderSide(
-                                                    color: Colors.green),
+                                              const TextUtil(
+                                                text: "Confirm New Password",
+                                                size: 10,
+                                                color: Colors.green,
                                               ),
-                                            ),
-                                            child: SingleChildScrollView(
-                                              child: TextFormField(
-                                                obscureText: true,
-                                                controller: _confirmController,
-                                                style: const TextStyle(
-                                                    color: Colors.black),
-                                                decoration:
-                                                    const InputDecoration(
-                                                  suffixIcon: Icon(
-                                                    Icons.lock,
-                                                    color: Colors.green,
+                                              Container(
+                                                height: 35,
+                                                decoration: const BoxDecoration(
+                                                  border: Border(
+                                                    bottom: BorderSide(
+                                                        color: Colors.green),
                                                   ),
-                                                  fillColor: Colors.green,
-                                                  border: InputBorder.none,
+                                                ),
+                                                child: SingleChildScrollView(
+                                                  child: TextFormField(
+                                                    obscureText: true,
+                                                    controller:
+                                                        _confirmController,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      suffixIcon: Icon(
+                                                        Icons.lock,
+                                                        color: Colors.green,
+                                                      ),
+                                                      fillColor: Colors.green,
+                                                      border: InputBorder.none,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                context, 'Cancel'),
+                                            child: const Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              if (_passwordController.text !=
+                                                  _confirmController.text) {
+                                                setState(() {
+                                                  error =
+                                                      'Not matched passwords!';
+                                                });
+                                                Future.delayed(
+                                                    const Duration(seconds: 2),
+                                                    () {
+                                                  setState(() {
+                                                    error = '';
+                                                  });
+                                                });
+                                                Navigator.pop(
+                                                    context, 'Cancel');
+                                                return;
+                                              }
+                                              final response = await AuthService
+                                                  .updateProfile(
+                                                      null,
+                                                      null,
+                                                      _passwordController.text,
+                                                      _oldController.text);
+                                              if (!context.mounted) return;
+                                              if (response.statusCode == 200) {
+                                                setState(() {
+                                                  success =
+                                                      'Password is reset successfully';
+                                                });
+                                                Future.delayed(
+                                                    const Duration(seconds: 2),
+                                                    () {
+                                                  setState(() {
+                                                    success = '';
+                                                  });
+                                                });
+                                                Navigator.pop(context, 'OK');
+                                              } else {
+                                                setState(() {
+                                                  error = jsonDecode(
+                                                      response.body)['message'];
+                                                });
+                                                Future.delayed(
+                                                    const Duration(seconds: 2),
+                                                    () {
+                                                  setState(() {
+                                                    error = '';
+                                                  });
+                                                });
+                                                Navigator.pop(
+                                                    context, 'Cancel');
+                                              }
+                                            },
+                                            child: const Text('OK'),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'Cancel'),
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          if (_passwordController.text !=
-                                              _confirmController.text) {
-                                            setState(() {
-                                              error = 'Not matched passwords!';
-                                            });
-                                            Future.delayed(
-                                                const Duration(seconds: 2), () {
-                                              setState(() {
-                                                error = '';
-                                              });
-                                            });
-                                            Navigator.pop(context, 'Cancel');
-                                            return;
-                                          }
-                                          final response =
-                                              await AuthService.updateProfile(
-                                                  null,
-                                                  null,
-                                                  _passwordController.text,
-                                                  _oldController.text);
-                                          if (!context.mounted) return;
-                                          if (response.statusCode == 200) {
-                                            setState(() {
-                                              success =
-                                                  'Password is reset successfully';
-                                            });
-                                            Future.delayed(
-                                                const Duration(seconds: 2), () {
-                                              setState(() {
-                                                success = '';
-                                              });
-                                            });
-                                            Navigator.pop(context, 'OK');
-                                          } else {
-                                            setState(() {
-                                              error = jsonDecode(
-                                                  response.body)['message'];
-                                            });
-                                            Future.delayed(
-                                                const Duration(seconds: 2), () {
-                                              setState(() {
-                                                error = '';
-                                              });
-                                            });
-                                            Navigator.pop(context, 'Cancel');
-                                          }
-                                        },
-                                        child: const Text('OK'),
-                                      ),
-                                    ],
+                                    child: const TextUtil(
+                                      text: 'Reset Password',
+                                      color: Colors.green,
+                                    ),
                                   ),
                                 ),
-                                child: const TextUtil(
-                                  text: 'Reset Password',
-                                  color: Colors.green,
-                                ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () async {
-                          final response = await UserService.deleteUser();
-                          if (response.statusCode == 200) {
-                            setState(() {
-                              error = 'Your account is deleted successfully';
-                            });
-                            Future.delayed(const Duration(seconds: 2), () {
-                              setState(() {
-                                error = '';
-                              });
-                            });
-                          }
-                        },
-                        child: Card(
-                          color: Colors.red[400],
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Delete Account'),
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                        Container(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () async {
+                              final response = await UserService.deleteUser();
+                              if (response.statusCode == 200) {
+                                setState(() {
+                                  error =
+                                      'Your account is deleted successfully';
+                                });
+                                Future.delayed(const Duration(seconds: 2), () {
+                                  setState(() {
+                                    error = '';
+                                  });
+                                });
+                              }
+                            },
+                            child: Card(
+                              color: Colors.red[400],
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text('Delete Account'),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],

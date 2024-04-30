@@ -46,7 +46,7 @@ class _LoginState extends State<Login> {
       });
 
       bool showPolicy = prefs.getBool('showPolicy') ?? true;
-      print(showPolicy);
+
       if (showPolicy) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showDialog(
@@ -192,18 +192,22 @@ class _LoginState extends State<Login> {
                                 color: Colors.black,
                               ),
                               const Spacer(),
-                              Checkbox(
-                                value: saveCredential,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    saveCredential = value ?? false;
-                                  });
-                                },
-                              ),
-                              const TextUtil(
-                                text: "Save Password",
-                                size: 12,
-                                color: Colors.black,
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: saveCredential,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        saveCredential = value ?? false;
+                                      });
+                                    },
+                                  ),
+                                  const TextUtil(
+                                    text: "Save Password",
+                                    size: 12,
+                                    color: Colors.black,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -293,6 +297,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
+              const SizedBox(height: 30)
             ],
           ),
         ),
@@ -348,7 +353,7 @@ class _PolicyDialogState extends State<PolicyDialog> {
           },
         ),
         const Text('Don\'t show again'),
-        const SizedBox(width: 100),
+        const SizedBox(width: 20),
         TextButton(
           child: const Text('Accept'),
           onPressed: () async {

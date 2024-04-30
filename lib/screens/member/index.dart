@@ -41,122 +41,126 @@ class _MemberState extends State<Member> {
               image: AssetImage("assets/homebg.jpg"), fit: BoxFit.fill),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          children: [
-            HomeHeader(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            ),
-            SizedBox(
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const TextUtil(
-                    text: "Pardna Participants",
-                    color: Colors.black,
-                    weight: true,
-                    size: 25,
-                  ),
-                  TextButton(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.black,
-                      ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              HomeHeader(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              ),
+              SizedBox(
+                height: 60,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const TextUtil(
+                      text: "Pardna Participants",
+                      color: Colors.black,
+                      weight: true,
+                      size: 25,
                     ),
-                    onPressed: () => _dialogBuilder(context),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 15),
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-              ),
-              child: SizedBox(
-                height: 550,
-                width: 400,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for (int index = 0; index < members.length; index++)
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                const AdvancedAvatar(
-                                  size: 50,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.green,
-                                  ),
-                                  child: Icon(
-                                    Icons.account_circle,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                ),
-                                const SizedBox(width: 15),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextUtil(
-                                      height: 25,
-                                      text: members[index]['name'],
-                                      size: 15,
-                                      color: Colors.black,
-                                    ),
-                                    TextUtil(
-                                      height: 20,
-                                      text: members[index]['email'],
-                                      size: 13,
-                                      color: Colors.grey,
-                                    ),
-                                    TextUtil(
-                                      height: 20,
-                                      text: members[index]['phone'] ??
-                                          'No phone number',
-                                      size: 13,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            const Divider(),
-                          ],
-                        ),
-                      TextButton(
-                        child: Container(
-                          width: 45,
-                          height: 45,
-                          decoration: BoxDecoration(
+                    TextButton(
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
                             color: Colors.green,
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: const Icon(
-                            Icons.add,
-                            color: Colors.black,
-                          ),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.black,
                         ),
-                        onPressed: () => _dialogBuilder(context),
                       ),
-                    ],
+                      onPressed: () => _dialogBuilder(context),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                ),
+                child: SizedBox(
+                  height: 550,
+                  width: 400,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        for (int index = 0; index < members.length; index++)
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  const AdvancedAvatar(
+                                    size: 50,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.green,
+                                    ),
+                                    child: Icon(
+                                      Icons.account_circle,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      TextUtil(
+                                        height: 25,
+                                        text: members[index]['name'],
+                                        size: 15,
+                                        color: Colors.black,
+                                      ),
+                                      TextUtil(
+                                        height: 20,
+                                        text: members[index]['email'],
+                                        size: 13,
+                                        color: Colors.grey,
+                                      ),
+                                      TextUtil(
+                                        height: 20,
+                                        text: members[index]['phone'] ??
+                                            'No phone number',
+                                        size: 13,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              const Divider(),
+                            ],
+                          ),
+                        TextButton(
+                          child: Container(
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.black,
+                            ),
+                          ),
+                          onPressed: () => _dialogBuilder(context),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

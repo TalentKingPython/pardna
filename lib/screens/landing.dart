@@ -130,19 +130,63 @@ class _LandingState extends State<Landing> {
                                       size: 15,
                                       weight: true,
                                     ),
-                                    TextUtil(
-                                      text:
-                                          "${getRunningPeriod(DateTime.parse(projects[index]['start']), projects[index]['duration'])} / ${projects[index]['number']} ${durationMode(projects[index]['duration'])}",
-                                      color: Colors.green,
-                                      size: 12,
-                                    )
+                                    if (projects[index]['status'] == 'running')
+                                      TextUtil(
+                                        text:
+                                            '${getRunningPeriod(DateTime.parse(projects[index]['start']), projects[index]['duration'])} / ${projects[index]['number']} ${durationMode(projects[index]['duration'])}',
+                                        color: Colors.green,
+                                        size: 12,
+                                      )
+                                    else if (projects[index]['status'] ==
+                                        'finished')
+                                      const TextUtil(
+                                        text: 'Finished',
+                                        color: Colors.cyan,
+                                        size: 12,
+                                      )
+                                    else if (projects[index]['status'] ==
+                                        'canceled')
+                                      const TextUtil(
+                                        text: 'Canceled',
+                                        color: Colors.red,
+                                        size: 12,
+                                      )
+                                    else if (projects[index]['status'] ==
+                                        'preparing')
+                                      const TextUtil(
+                                        text: 'Preparing',
+                                        color: Colors.orange,
+                                        size: 12,
+                                      )
+                                    else
+                                      TextUtil(
+                                        text:
+                                            '${getRunningPeriod(DateTime.parse(projects[index]['start']), projects[index]['duration'])} / ${projects[index]['number']} ${durationMode(projects[index]['duration'])}',
+                                        color: Colors.green,
+                                        size: 12,
+                                      )
                                   ],
                                 ),
-                                const TextUtil(
-                                  text: "(0 %)",
-                                  color: Colors.green,
-                                  size: 12,
-                                )
+                                if (projects[index]['status'] == 'running')
+                                  TextUtil(
+                                    text:
+                                        "(${(getRunningPeriod(DateTime.parse(projects[index]['start']), projects[index]['duration']) / int.parse(projects[index]['number'])).toStringAsFixed(2)} %)",
+                                    color: Colors.green,
+                                    size: 12,
+                                  )
+                                else if (projects[index]['status'] ==
+                                    'finished')
+                                  const TextUtil(
+                                    text: "(100 %)",
+                                    color: Colors.green,
+                                    size: 12,
+                                  )
+                                else
+                                  const TextUtil(
+                                    text: "(0 %)",
+                                    color: Colors.green,
+                                    size: 12,
+                                  )
                               ],
                             ),
                           ),
